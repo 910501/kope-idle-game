@@ -1,0 +1,2 @@
+# kope-idle-game
+demo.
