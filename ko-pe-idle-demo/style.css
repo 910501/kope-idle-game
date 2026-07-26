@@ -1,0 +1,339 @@
+/*==============================
+    全域設定
+==============================*/
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    background:#000;
+
+    color:white;
+
+    font-family:"Microsoft JhengHei",sans-serif;
+
+}
+
+
+/*==============================
+    整體容器
+==============================*/
+
+..game-container {
+    width: min(1440px, 100%);
+    min-height: 100vh;
+
+    margin: 0 auto;
+}
+
+
+/*==============================
+    上方狀態列
+==============================*/
+
+.top-bar {
+    width: 100%;
+    min-height: 120px;
+
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+
+    padding: 16px 28px;
+
+    border-bottom: 2px solid white;
+}
+
+.game-title {
+    margin: 0;
+
+    font-size: 44px;
+    letter-spacing: 5px;
+    white-space: nowrap;
+}
+
+
+/* 右上角玩家資訊 */
+
+.player-status {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 52px;
+}
+
+.level-status {
+    width: 260px;
+}
+
+.player-status p {
+    margin: 0;
+
+    font-size: 22px;
+    font-weight: bold;
+}
+
+#money {
+    min-width: 180px;
+    font-size: 26px;
+    white-space: nowrap;
+	align-self: center;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 12px;
+
+    margin: 8px 0;
+
+    overflow: hidden;
+
+    background: #555;
+    border-radius: 999px;
+}
+
+.progress-fill {
+    width: 0%;
+    height: 100%;
+    background: lime;
+	transition: width 0.25s ease;
+}
+
+.exploration-bar .progress-fill {
+    background: red;
+    transition: width 0.25s linear;
+}
+
+/*==============================
+    主畫面
+==============================*/
+
+.game-layout{
+
+    display:grid;
+
+    grid-template-columns:25% 45% 30%;
+
+    min-height:700px;
+
+}
+
+
+/*==============================
+    三大區塊
+==============================*/
+.game-layout {
+    display: grid;
+    grid-template-columns: 25% 45% 30%;
+
+    min-height: 560px;
+}
+
+.character-panel,
+.exploration-panel,
+.log-panel {
+    min-width: 0;
+    padding: 16px;
+
+    border-right: 2px solid white;
+}
+
+.log-panel {
+    border-right: none;
+}
+/*==============================
+    角色圖片
+==============================*/
+.character-image,
+.area-image {
+    overflow: hidden;
+}
+
+#character-image,
+#area-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+#character-image {
+    object-fit: contain;
+    object-position: center bottom;
+}
+
+#area-image {
+    object-fit: cover;
+    object-position: center;
+}
+
+
+
+/*==============================
+    場景圖片
+==============================*/
+.area-image {
+    height: 280px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    margin-bottom: 16px;
+
+    border: 1px solid white;
+}
+
+/*==============================
+    探索控制
+==============================*/
+.current-area-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 20px;
+}
+
+.current-area-header h2 {
+    font-size: 25px;
+}
+
+.current-area-header p {
+    margin-top: 8px;
+
+    font-size: 22px;
+}
+
+#explore-btn {
+    padding: 8px 18px;
+
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/*==============================
+    探索按鈕
+==============================*/
+
+#explore-btn{
+
+    font-size:34px;
+
+    padding:12px 30px;
+
+    cursor:pointer;
+
+}
+
+
+/*==============================
+    地區選單
+==============================*/
+.area-selection {
+    margin-top: 24px;
+}
+
+.area-selection h2 {
+    margin-bottom: 12px;
+
+    font-size: 22px;
+}
+
+#area-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+#area-list button {
+    padding: 8px 12px;
+
+    font-size: 16px;
+}
+
+/*==============================
+    素材
+==============================*/
+.material-panel {
+    padding: 14px 24px;
+
+    border-top: 2px solid white;
+}
+
+.material-panel h2 {
+    font-size: 22px;
+}
+
+.material-list {
+    display: flex;
+    gap: 50px;
+
+    margin-top: 10px;
+
+    font-size: 18px;
+}
+
+/*==============================
+    探索紀錄
+==============================*/
+.log-panel h2 {
+    font-size: 26px;
+}
+
+#log {
+    height: 500px;
+    margin-top: 12px;
+    padding-right: 8px;
+
+    overflow-y: auto;
+
+    font-size: 15px;
+    line-height: 1.65;
+}
+
+//*==============================
+    特殊事件
+==============================*/
+
+.event-panel[hidden] {
+    display: none;
+}
+
+.event-panel {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 24px;
+
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.event-window {
+    width: min(620px, 90vw);
+    max-height: 80vh;
+    overflow-y: auto;
+
+    padding: 28px;
+
+    background: #222;
+    border: 2px solid white;
+}
+.event-buttons{
+    display:flex;
+    gap:12px;
+    margin-top:20px;
+    flex-wrap:wrap;
+}
+.event-panel[hidden] {
+    display: none !important;
+}

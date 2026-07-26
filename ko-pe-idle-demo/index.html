@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>KO-PE Idle</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+   <body>
+
+    <main class="game-container">
+
+        <!--========================
+            上方狀態列
+        ========================-->
+        <header class="top-bar">
+
+            <h1 class="game-title">
+                KO-PE Idle
+            </h1>
+
+            <section class="player-status">
+
+                <div class="level-status">
+
+                    <p id="level">
+                        等級：1
+                    </p>
+
+                    <div class="progress-bar exp-bar">
+                        <div
+                            id="exp-progress"
+                            class="progress-fill"
+                        ></div>
+                    </div>
+
+                    <p id="exp">
+                        EXP：0 / 100
+                    </p>
+
+                </div>
+
+                <p id="money">
+                    黑金晶片：0
+                </p>
+
+            </section>
+
+        </header>
+
+
+        <!--========================
+            遊戲主要區域
+        ========================-->
+        <section class="game-layout">
+
+            <!-- 左側：角色 -->
+            <aside class="character-panel">
+
+                <div class="character-image">
+
+    <img
+        id="character-image"
+        src="images/kope/idle.png"
+        alt="KO-PE"
+    >
+
+	</div>
+
+                <section class="character-dialogue">
+
+                    <h2>
+                        KO-PE
+                    </h2>
+
+                    <p id="character-line">
+                        「嘿！朋友，今天去哪裡？」
+                    </p>
+
+                </section>
+
+            </aside>
+
+
+            <!-- 中央：探索 -->
+            <section class="exploration-panel">
+
+                <div class="area-image">
+
+    <img
+        id="area-image"
+        src="images/areas/outer-ruins.jpg"
+        alt="目前探索區域"
+    >
+
+</div>
+
+                <section class="exploration-controls">
+
+                    <div class="current-area-header">
+
+                        <div>
+
+                            <h2>
+                                目前探索區域
+                            </h2>
+
+                            <p id="area-name">
+                                外圍廢墟
+                            </p>
+
+                        </div>
+
+                        <button id="explore-btn">
+                            開始探索
+                        </button>
+
+                    </div>
+
+                    <div class="progress-bar exploration-bar">
+
+                        <div
+                            id="exploration-progress"
+                            class="progress-fill"
+                        ></div>
+
+                    </div>
+
+                    <p id="countdown">
+                        剩餘時間：0 秒
+                    </p>
+
+
+                    <section class="area-selection">
+
+                        <h2>
+                            選擇探索區域
+                        </h2>
+
+                        <div id="area-list">
+                        </div>
+
+                    </section>
+
+                </section>
+
+            </section>
+
+
+            <!-- 右側：探索紀錄 -->
+            <aside class="log-panel">
+
+                <h2>
+                    探索紀錄
+                </h2>
+
+                <div id="log">
+                    歡迎來到 KO-PE Idle！
+                </div>
+
+            </aside>
+
+        </section>
+
+
+        <!--========================
+            下方素材列
+        ========================-->
+        <section class="material-panel">
+
+            <h2>
+                回收素材
+            </h2>
+
+            <div class="material-list">
+
+                <p id="scrap">
+                    廢鐵：0
+                </p>
+
+                <p id="wire">
+                    破損電線：0
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!--========================
+            特殊事件
+        ========================-->
+        <section
+            id="event-panel"
+            class="event-panel"
+            hidden
+        >
+
+            <div class="event-window">
+
+                <h2 id="event-title">
+                    特殊事件
+                </h2>
+
+                <p id="event-description">
+                    事件內容
+                </p>
+
+                <div id="event-options">
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="game.js"></script>
+
+</body>></script>
+
+</body>
+
+</html>
