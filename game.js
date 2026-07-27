@@ -1,6 +1,6 @@
 //==========================================
 // KO-PE Idle Demo
-// Version 0.3.6
+// Version 0.4.0
 //
 // 已完成：
 // ✔ 玩家系統
@@ -53,6 +53,11 @@ const player = {
     exploringAreaId: null,
 
     materials: {},
+	equipmentLevels: {
+
+    recoveryTools: 1
+
+},
 
     discoveredAreas: [],
 
@@ -121,12 +126,16 @@ function saveGame() {
         player.currentArea,
 
     materials: {
-        ...player.materials
-    },
+    ...player.materials
+},
 
-    discoveredAreas: [
-        ...player.discoveredAreas
-    ]
+equipmentLevels: {
+    ...player.equipmentLevels
+},
+
+discoveredAreas: [
+    ...player.discoveredAreas
+]
 
 };
 
@@ -230,6 +239,18 @@ if (
     };
 
 }
+if (
+    savedData.equipmentLevels &&
+    typeof savedData.equipmentLevels ===
+        "object"
+) {
+
+    player.equipmentLevels = {
+        ...player.equipmentLevels,
+        ...savedData.equipmentLevels
+    };
+
+}
 
 if (
     Array.isArray(
@@ -317,7 +338,7 @@ const gameInfoData = {
             <h3>目前版本</h3>
 
             <p>
-                Version 0.3.6
+                Version 0.4.0
             </p>
         `
 
@@ -386,17 +407,21 @@ const materialData = [
 
     {
         id: "scrap",
-        name: "銹蝕廢金屬",
-        category: "common",
-        description:
-            "被銹霧侵蝕的金屬碎片。" +
-            "經過重新熔煉後，仍可作為基礎維修材料。"
+    name: "銹蝕廢金屬",
+    category: "common",
+
+    sellPrice: 2,
+
+    description:
+        "被銹霧侵蝕的金屬碎片。" +
+        "經過重新熔煉後，仍可作為基礎維修材料。"
     },
 
     {
         id: "wire",
         name: "老化導線",
         category: "common",
+		sellPrice: 3,
         description:
             "從建築與廢棄設備中拆下的導線。" +
             "外層已經脆化，但內部金屬仍有回收價值。"
@@ -406,6 +431,7 @@ const materialData = [
         id: "polymer",
         name: "耐蝕聚合物",
         category: "common",
+		sellPrice: 3,
         description:
             "舊時代使用的合成材料。" +
             "能用於修補防護服、面罩與裝備外殼。"
@@ -415,6 +441,7 @@ const materialData = [
         id: "metalPlate",
         name: "變形合金板",
         category: "common",
+		sellPrice: 5,
         description:
             "從建築外牆與機械外殼拆下的合金板。" +
             "表面變形，但仍可重新加工。"
@@ -424,6 +451,7 @@ const materialData = [
         id: "filterFiber",
         name: "污染過濾纖維",
         category: "common",
+		sellPrice: 6,
         description:
             "殘留於舊型空氣過濾設備中的特殊纖維。" +
             "清理後可用於維修呼吸裝備。"
@@ -437,6 +465,7 @@ const materialData = [
         id: "battery",
         name: "衰退蓄能電池",
         category: "uncommon",
+		sellPrice: 10,
         description:
             "容量嚴重下降的舊式電池。" +
             "部分單元仍能保存少量能源。"
@@ -446,6 +475,7 @@ const materialData = [
         id: "circuit",
         name: "受蝕電路模組",
         category: "uncommon",
+		sellPrice: 14,
         description:
             "遭到銹霧侵蝕的電子模組。" +
             "其中仍可能保留可用的控制元件。"
@@ -455,6 +485,7 @@ const materialData = [
         id: "motor",
         name: "微型驅動核心",
         category: "uncommon",
+		sellPrice: 18,
         description:
             "從自動門、輸送設備或智械中拆下的驅動裝置。" +
             "維修後仍可重新運轉。"
@@ -464,6 +495,7 @@ const materialData = [
         id: "sensor",
         name: "感應器組件",
         category: "uncommon",
+		sellPrice: 20,
         description:
             "舊文明設備使用的環境感應器。" +
             "可偵測溫度、動作或空氣成分。"
@@ -477,6 +509,7 @@ const materialData = [
         id: "foodPack",
         name: "密封合成食品",
         category: "uncommon",
+		sellPrice: 12,
         description:
             "包裝尚未破損的舊時代合成食品。" +
             "是否還能食用，通常取決於科佩有多勇敢。"
@@ -486,6 +519,7 @@ const materialData = [
         id: "energyCrystal",
         name: "微型能源結晶",
         category: "rare",
+		sellPrice: 80,
         description:
             "能夠穩定儲存高密度能源的人工結晶。" +
             "是光譜層維修能源設備的重要材料。"
@@ -495,6 +529,7 @@ const materialData = [
         id: "intactChip",
         name: "完整運算晶片",
         category: "rare",
+		sellPrice: 100,
         description:
             "少數未被銹霧破壞的舊文明晶片。" +
             "可用於精密設備與智械系統。"
@@ -504,6 +539,7 @@ const materialData = [
         id: "dataCarrier",
         name: "舊文明資料載體",
         category: "rare",
+		sellPrice: 150,
         description:
             "保存舊時代資料的儲存裝置。" +
             "內容可能是重要研究紀錄，也可能只是三百年前的購物清單。"
@@ -513,6 +549,7 @@ const materialData = [
         id: "blackBox",
         name: "密封黑盒",
         category: "rare",
+		sellPrice: 250,
         description:
             "具有高強度外殼的舊文明資料裝置。" +
             "通常記錄著設備最後運作時的資訊。"
@@ -522,6 +559,7 @@ const materialData = [
         id: "machineCore",
         name: "智械控制核心",
         category: "rare",
+		sellPrice: 400,
         description:
             "失控智械的主要控制模組。" +
             "具有極高回收價值，也可能仍在偷偷運算。"
@@ -542,6 +580,569 @@ const materialData = [
 }
 
 ];
+//========================
+// 裝備改造資料
+//========================
+
+const equipmentData = [
+
+    {
+        id: "recoveryTools",
+
+        category: "recovery",
+
+        name: "回收工具組",
+
+        description:
+            "科佩用來拆解機械、回收零件與處理危險物的工具組。",
+
+        levels: [
+
+            {
+                level: 1,
+
+                name:
+                    "拼裝式回收工具",
+
+                price: 0,
+
+                effectDescription:
+                    "目前沒有額外回收加成。",
+
+                effects: {
+
+                    commonMaterialBonusChance:
+                        0
+
+                }
+            },
+
+            {
+                level: 2,
+
+                name:
+                    "磁吸拆解工具",
+
+                price: 100,
+
+                effectDescription:
+                    "取得一般素材時，有 10% 機率額外獲得 1 個。",
+
+                effects: {
+
+                    commonMaterialBonusChance:
+                        0.1
+
+                }
+            },
+
+            {
+                level: 3,
+
+                name:
+                    "精密回收工具組",
+
+                price: 350,
+
+                effectDescription:
+                    "取得一般素材時，有 20% 機率額外獲得 1 個。",
+
+                effects: {
+
+                    commonMaterialBonusChance:
+                        0.2
+
+                }
+            }
+
+        ]
+
+    }
+
+];
+// 取得指定裝備資料
+function getEquipment(
+    equipmentId
+) {
+
+    return equipmentData.find(
+        function (equipment) {
+
+            return (
+                equipment.id ===
+                equipmentId
+            );
+
+        }
+    );
+
+}
+
+
+// 取得玩家目前的裝備等級
+function getEquipmentLevel(
+    equipmentId
+) {
+
+    const level =
+        player.equipmentLevels[
+            equipmentId
+        ];
+
+    if (
+        typeof level !== "number" ||
+        !Number.isFinite(level)
+    ) {
+
+        return 1;
+
+    }
+
+    return level;
+
+}
+
+
+// 取得裝備目前等級的資料
+function getCurrentEquipmentLevelData(
+    equipmentId
+) {
+
+    const equipment =
+        getEquipment(
+            equipmentId
+        );
+
+    if (!equipment) {
+        return null;
+    }
+
+    const currentLevel =
+        getEquipmentLevel(
+            equipmentId
+        );
+
+    return equipment.levels.find(
+        function (levelData) {
+
+            return (
+                levelData.level ===
+                currentLevel
+            );
+
+        }
+    ) || null;
+
+}
+
+
+// 取得下一級裝備資料
+function getNextEquipmentLevelData(
+    equipmentId
+) {
+
+    const equipment =
+        getEquipment(
+            equipmentId
+        );
+
+    if (!equipment) {
+        return null;
+    }
+
+    const currentLevel =
+        getEquipmentLevel(
+            equipmentId
+        );
+
+    return equipment.levels.find(
+        function (levelData) {
+
+            return (
+                levelData.level ===
+                currentLevel + 1
+            );
+
+        }
+    ) || null;
+
+}
+//========================
+// 裝備效果計算
+//========================
+
+function getPlayerEffects() {
+
+    const effects = {
+
+        commonMaterialBonusChance:
+            0,
+
+        explorationSpeed:
+            0,
+
+        expBonus:
+            0,
+
+        eventSuccessBonus:
+            0
+
+    };
+
+    equipmentData.forEach(
+        function (equipment) {
+
+            const currentLevelData =
+                getCurrentEquipmentLevelData(
+                    equipment.id
+                );
+
+            if (
+                !currentLevelData ||
+                !currentLevelData.effects
+            ) {
+
+                return;
+
+            }
+
+            Object.entries(
+                currentLevelData.effects
+            ).forEach(
+                function (
+                    [effectId, value]
+                ) {
+
+                    if (
+                        typeof value !==
+                        "number"
+                    ) {
+
+                        return;
+
+                    }
+
+                    if (
+                        typeof effects[
+                            effectId
+                        ] !== "number"
+                    ) {
+
+                        effects[
+                            effectId
+                        ] = 0;
+
+                    }
+
+                    effects[
+                        effectId
+                    ] += value;
+
+                }
+            );
+
+        }
+    );
+
+    return effects;
+
+}
+// 購買下一級裝備改造
+function upgradeEquipment(
+    equipmentId
+) {
+
+    const equipment =
+        getEquipment(
+            equipmentId
+        );
+
+    if (!equipment) {
+
+        console.warn(
+            "找不到裝備：" +
+            equipmentId
+        );
+
+        return false;
+
+    }
+
+    const nextLevelData =
+        getNextEquipmentLevelData(
+            equipmentId
+        );
+
+    if (!nextLevelData) {
+
+        addLog(
+            "「" +
+            equipment.name +
+            "」已達目前最高等級。"
+        );
+
+        showRandomCharacterLine(
+            characterDialogue
+                .blackMarket
+                .maxLevel
+        );
+
+        return false;
+
+    }
+
+    if (
+        player.money <
+        nextLevelData.price
+    ) {
+
+        addLog(
+            "黑金晶片不足，無法改造「" +
+            equipment.name +
+            "」。"
+        );
+
+        showRandomCharacterLine(
+            characterDialogue
+                .blackMarket
+                .notEnoughMoney
+        );
+
+        return false;
+
+    }
+
+    player.money -=
+        nextLevelData.price;
+
+    player.equipmentLevels[
+        equipmentId
+    ] =
+        nextLevelData.level;
+
+    addLog(
+        "裝備改造完成：「" +
+        nextLevelData.name +
+        "」。"
+    );
+
+    showRandomCharacterLine(
+        characterDialogue
+            .blackMarket
+            .upgradeSuccess
+    );
+
+    saveGame();
+    updateUI();
+
+    return true;
+
+}
+//========================
+// 黑市交易系統
+//========================
+function openBlackMarket() {
+
+    if (!blackMarketModal) {
+        return;
+    }
+
+    blackMarketModal.hidden =
+        false;
+
+    showRandomCharacterLine(
+        characterDialogue
+            .blackMarket
+            .open
+    );
+
+    updateBlackMarketUI();
+
+    updateEquipmentUpgradeUI();
+
+}
+
+
+function closeBlackMarket() {
+
+    if (!blackMarketModal) {
+        return;
+    }
+
+    blackMarketModal.hidden =
+        true;
+
+}
+// 取得可出售的素材資料
+function getSellableMaterials() {
+
+    return materialData.filter(
+        function (material) {
+
+            return (
+                material.category !==
+                    "keyItem" &&
+                typeof material.sellPrice ===
+                    "number" &&
+                material.sellPrice > 0
+            );
+
+        }
+    );
+
+}
+
+
+// 出售指定數量的素材
+function sellMaterial(
+    materialId,
+    requestedAmount
+) {
+
+    const material =
+        materialData.find(
+            function (item) {
+
+                return item.id ===
+                    materialId;
+
+            }
+        );
+
+    if (!material) {
+
+        console.warn(
+            "找不到要出售的素材：" +
+            materialId
+        );
+
+        return false;
+
+    }
+
+    // 劇情道具不能出售
+    if (
+        material.category ===
+        "keyItem" ||
+        typeof material.sellPrice !==
+            "number"
+    ) {
+
+        addLog(
+            "「" +
+            material.name +
+            "」無法在黑市出售。"
+        );
+
+        showRandomCharacterLine(
+            characterDialogue
+                .blackMarket
+                .keyItem
+        );
+
+        return false;
+
+    }
+
+    const ownedAmount =
+        player.materials[
+            materialId
+        ] || 0;
+
+    const amount =
+        Math.floor(
+            Number(requestedAmount)
+        );
+
+    if (
+        !Number.isFinite(amount) ||
+        amount <= 0
+    ) {
+
+        return false;
+
+    }
+
+    if (ownedAmount < amount) {
+
+        addLog(
+            "持有的「" +
+            material.name +
+            "」數量不足。"
+        );
+
+        showRandomCharacterLine(
+            characterDialogue
+                .blackMarket
+                .noMaterial
+        );
+
+        return false;
+
+    }
+
+    const earnedMoney =
+        material.sellPrice *
+        amount;
+
+    player.materials[
+        materialId
+    ] -= amount;
+
+    player.money +=
+        earnedMoney;
+
+    addLog(
+        "在黑市出售「" +
+        material.name +
+        "」×" +
+        amount +
+        "，獲得黑金晶片 " +
+        earnedMoney +
+        "。"
+    );
+
+    showRandomCharacterLine(
+        characterDialogue
+            .blackMarket
+            .sellSuccess
+    );
+
+    saveGame();
+    updateUI();
+
+    return true;
+
+}
+// 全部出售
+function sellAllMaterial(
+    materialId
+) {
+
+    const ownedAmount =
+        player.materials[
+            materialId
+        ] || 0;
+
+    if (ownedAmount <= 0) {
+
+        showRandomCharacterLine(
+            characterDialogue
+                .blackMarket
+                .noMaterial
+        );
+
+        return false;
+
+    }
+
+    return sellMaterial(
+        materialId,
+        ownedAmount
+    );
+
+}
+
 //========================
 // 地區資料
 //========================
@@ -890,6 +1491,8 @@ const characterDialogue = {
         "「今天也要一起去找些好東西嗎？」",
 		
 		"「喂喂？喂～～聽得到嗎？喂喂！這裡是大天才科佩在跟你說話哦！訊號還行吧？」",
+		
+		"「霧潮開始下降了，現在正是衝進去撿寶貝的黃金時間！記得看時間，不然神仙也救不了你！」",
 
         "「嘿，別只是站著像個當機的伺服器！舊時代的寶藏正等著我們呢！」"
 
@@ -901,6 +1504,8 @@ const characterDialogue = {
         "「這附近一定還藏著能用的東西。」",
 
         "「小心腳下，這裡的地板看起來不太可靠。」",
+		
+		"「全能嚮導從不迷路！我們只是在探索一條地圖上沒有記載的新路線！」",
 		
 		"「在這個爛透了的世界，能找到一個陪我這麽瘋的人，比在垃圾堆裡挖到黑金晶片還難。」",
 
@@ -928,7 +1533,8 @@ const characterDialogue = {
         ],
 
         5: [
-            "「這裡不像普通的廢墟。有人刻意把它藏起來了。」"
+            "「這裡不像普通的廢墟。有人刻意把它藏起來了。」",
+			"「這可是禁區！非常危險、非常致命——所以報酬應該也非常不錯吧！」"
         ]
 
     },
@@ -964,8 +1570,72 @@ const characterDialogue = {
 
         "「朋友，剛才的事情就當作沒發生過，好嗎？」"
 
-    ]
+    ],
+	// 黑市相關
+	blackMarket: {
 
+    open: [
+
+        "「歡迎來到廢土最講信用的交易場所！這句話絕對不是招牌要求我念的。」",
+
+        "「黑市規則很簡單：不問來源，不接受退貨，記得數清楚晶片！」",
+
+        "「朋友，把背包放好。這裡的人看到完整晶片時，眼睛會比掃描器還亮。」"
+
+    ],
+
+    sellSuccess: [
+
+        "「成交！看吧，我就說這些不是垃圾，只是還沒遇到識貨的人！」",
+
+        "「黑金晶片到手！我們的背包也終於能喘口氣了。」",
+
+        "「很好，成功把一堆廢料變成了更方便攜帶的廢料代幣！」"
+
+    ],
+
+    noMaterial: [
+
+        "「想賣空氣嗎？這裡的空氣可能有毒，但還沒值錢到那個程度。」",
+
+        "「朋友，我也很想成交，但你的背包比交易商的良心還空。」"
+
+    ],
+
+    keyItem: [
+
+    "「這個不能賣。至少在我們弄清楚它會不會打開某個危險設施以前不能。」",
+
+    "「不行不行，這是線索！拿線索換錢通常是故事裡最糟糕的決定。」"
+
+],
+ // 升級相關
+	upgradeSuccess: [
+
+    "「升級完成！現在能把垃圾拆得更有價值了！」",
+
+    "「新工具到手！附近那些寫著『禁止拆解』的設備要倒楣了。」",
+
+    "「聽聽這個運轉聲！這絕對是可靠的聲音……大概。」"
+
+],
+
+	notEnoughMoney: [
+
+    "「黑金晶片不夠。看來我們得再去翻幾座廢墟了！」",
+
+    "「朋友，光靠熱情不能付款。我試過了，他們不收。」"
+
+],
+
+	maxLevel: [
+
+    "「已經改到目前的極限了！再加零件，它可能會開始要求薪水。」",
+
+    "「這套工具已經完美了！至少在我想到下一個改法以前。」"
+
+]
+}
 };
 //========================
 // 特殊事件資料
@@ -1394,7 +2064,35 @@ const events = [
 //========================
 // 地區功能
 //========================
+function stopExploration() {
 
+    if (!player.isExploring) {
+        return;
+    }
+
+    clearInterval(
+        explorationTimer
+    );
+
+    explorationTimer = null;
+
+    player.isExploring = false;
+
+    player.remainingTime = 0;
+
+    player.exploringAreaId = null;
+
+    setCharacterState(
+        "idle"
+    );
+
+    addLog(
+        "探索已停止。"
+    );
+
+    updateUI();
+
+}
 // 尋找玩家目前所在的地區
 function getCurrentArea() {
     return areas.find(function (area) {
@@ -1551,7 +2249,11 @@ function rollAreaDrops(area) {
 
     const obtainedMaterials = {};
 
-    area.drops.forEach(function (drop) {
+    const playerEffects =
+        getPlayerEffects();
+
+    area.drops.forEach(
+        function (drop) {
 
         const randomNumber =
             Math.random();
@@ -1578,8 +2280,40 @@ function rollAreaDrops(area) {
             }
 
             obtainedMaterials[
+    drop.material
+] += amount;
+
+
+// 一般素材裝備加成
+const material =
+    materialData.find(
+        function (item) {
+
+            return (
+                item.id ===
                 drop.material
-            ] += amount;
+            );
+
+        }
+    );
+
+const isCommonMaterial =
+    material &&
+    material.category ===
+        "common";
+
+if (
+    isCommonMaterial &&
+    Math.random() <
+        playerEffects
+            .commonMaterialBonusChance
+) {
+
+    obtainedMaterials[
+        drop.material
+    ] += 1;
+
+}
 
         }
 
@@ -2281,6 +3015,12 @@ function updateUI() {
 	updateEventUI();
 	
 	updateCharacterUI();
+	
+	updateBlackMarketUI();
+	
+	updateEquipmentUpgradeUI();
+	
+	updateBlackMarketMoneyUI();
 }
 
 
@@ -2457,21 +3197,41 @@ function updateLogUI() {
 
 function updateExploreButtonUI() {
 
-    exploreButton.disabled =
-    player.isExploring ||
-    player.activeEvent;
+    if (!exploreToggleButton) {
+        return;
+    }
+
+    exploreToggleButton.disabled =
+        Boolean(player.activeEvent);
 
     if (player.isExploring) {
 
-        exploreButton.textContent =
-            "探索中……";
+        exploreToggleButton.textContent =
+            "⏸";
+
+        exploreToggleButton.setAttribute(
+            "aria-label",
+            "停止探索"
+        );
+
+        exploreToggleButton.title =
+            "停止探索";
 
     } else {
 
-        exploreButton.textContent =
+        exploreToggleButton.textContent =
+            "▶";
+
+        exploreToggleButton.setAttribute(
+            "aria-label",
+            "開始探索"
+        );
+
+        exploreToggleButton.title =
             "開始探索";
 
     }
+
 }
 	// 更新地區選擇按鈕
 function updateAreaSelectionUI() {
@@ -2634,7 +3394,279 @@ function updateEventUI() {
 
         }
     );
+}
+	function updateBlackMarketUI() {
+
+    const marketList =
+        document.getElementById(
+            "black-market-list"
+        );
+
+    if (!marketList) {
+        return;
+    }
+
+    marketList.innerHTML = "";
+
+    const sellableMaterials =
+        getSellableMaterials();
+
+    sellableMaterials.forEach(
+        function (material) {
+
+            const ownedAmount =
+                player.materials[
+                    material.id
+                ] || 0;
+
+            const row =
+                document.createElement(
+                    "div"
+                );
+
+            row.className =
+                "black-market-row";
+
+            const information =
+                document.createElement(
+                    "p"
+                );
+
+            information.textContent =
+                material.name +
+                "｜持有：" +
+                ownedAmount +
+                "｜單價：" +
+                material.sellPrice +
+                " 黑金晶片";
+
+            const sellOneButton =
+                document.createElement(
+                    "button"
+                );
+
+            sellOneButton.textContent =
+                "出售 1 個";
+
+            sellOneButton.disabled =
+                ownedAmount <= 0;
+
+            sellOneButton.addEventListener(
+                "click",
+                function () {
+
+                    sellMaterial(
+                        material.id,
+                        1
+                    );
+
+                }
+            );
+
+            const sellAllButton =
+                document.createElement(
+                    "button"
+                );
+
+            sellAllButton.textContent =
+                "全部出售";
+
+            sellAllButton.disabled =
+                ownedAmount <= 0;
+
+            sellAllButton.addEventListener(
+                "click",
+                function () {
+
+                    sellAllMaterial(
+                        material.id
+                    );
+
+                }
+            );
+
+            row.appendChild(
+                information
+            );
+
+            row.appendChild(
+                sellOneButton
+            );
+
+            row.appendChild(
+                sellAllButton
+            );
+
+            marketList.appendChild(
+                row
+            );
+
+        }
+    );
 	}
+	function updateEquipmentUpgradeUI() {
+
+    const equipmentList =
+        document.getElementById(
+            "equipment-upgrade-list"
+        );
+
+    if (!equipmentList) {
+        return;
+    }
+
+    equipmentList.innerHTML = "";
+
+    equipmentData.forEach(
+        function (equipment) {
+
+            const currentLevel =
+                getEquipmentLevel(
+                    equipment.id
+                );
+
+            const currentLevelData =
+                getCurrentEquipmentLevelData(
+                    equipment.id
+                );
+
+            const nextLevelData =
+                getNextEquipmentLevelData(
+                    equipment.id
+                );
+
+            if (!currentLevelData) {
+                return;
+            }
+
+            const row =
+                document.createElement(
+                    "div"
+                );
+
+            row.className =
+                "equipment-upgrade-row";
+
+            const title =
+                document.createElement(
+                    "h4"
+                );
+
+            title.textContent =
+                equipment.name +
+                " Lv." +
+                currentLevel;
+
+            const currentName =
+                document.createElement(
+                    "p"
+                );
+
+            currentName.textContent =
+                "目前裝備：" +
+                currentLevelData.name;
+
+            const currentEffect =
+                document.createElement(
+                    "p"
+                );
+
+            currentEffect.textContent =
+                currentLevelData
+                    .effectDescription;
+
+            row.appendChild(
+                title
+            );
+
+            row.appendChild(
+                currentName
+            );
+
+            row.appendChild(
+                currentEffect
+            );
+
+            const upgradeButton =
+                document.createElement(
+                    "button"
+                );
+
+            if (!nextLevelData) {
+
+                upgradeButton.textContent =
+                    "已達最高等級";
+
+                upgradeButton.disabled =
+                    true;
+
+            } else {
+
+                const nextInformation =
+                    document.createElement(
+                        "p"
+                    );
+
+                nextInformation.textContent =
+                    "下一階段：" +
+                    nextLevelData.name +
+                    "｜" +
+                    nextLevelData
+                        .effectDescription;
+
+                row.appendChild(
+                    nextInformation
+                );
+
+                upgradeButton.textContent =
+                    "改造｜" +
+                    nextLevelData.price +
+                    " 黑金晶片";
+
+                upgradeButton.disabled =
+                    player.money <
+                    nextLevelData.price;
+
+                upgradeButton.addEventListener(
+                    "click",
+                    function () {
+
+                        upgradeEquipment(
+                            equipment.id
+                        );
+
+                    }
+                );
+
+            }
+
+            row.appendChild(
+                upgradeButton
+            );
+
+            equipmentList.appendChild(
+                row
+            );
+
+        }
+    );
+}
+function updateBlackMarketMoneyUI() {
+
+    const moneyElement =
+        document.getElementById(
+            "black-market-money"
+        );
+
+    if (!moneyElement) {
+        return;
+    }
+
+    moneyElement.textContent =
+        player.money;
+
+}
+
 //========================
 // 立繪切換
 //========================
@@ -2929,23 +3961,93 @@ document.addEventListener(
         if (event.key === "Escape") {
 
             closeInfoModal();
+			closeBlackMarket();
 
         }
 
     }
 );
+function toggleExploration() {
 
+    if (player.isExploring) {
+
+        stopExploration();
+
+    } else {
+
+        startExploration();
+
+    }
+
+}
 //========================
 // 遊戲開始
 //========================
 
-const exploreButton =
-    document.getElementById("explore-btn");
+const exploreToggleButton =
+    document.getElementById(
+        "explore-toggle-btn"
+    );
 
-exploreButton.addEventListener(
-    "click",
-    startExploration
-);
+const blackMarketOpenButton =
+    document.getElementById(
+        "black-market-open-btn"
+    );
+
+const blackMarketCloseButton =
+    document.getElementById(
+        "black-market-close-btn"
+    );
+
+const blackMarketModal =
+    document.getElementById(
+        "black-market-modal"
+    );
+	if (blackMarketOpenButton) {
+
+    blackMarketOpenButton.addEventListener(
+        "click",
+        openBlackMarket
+    );
+
+}
+
+
+if (blackMarketCloseButton) {
+
+    blackMarketCloseButton.addEventListener(
+        "click",
+        closeBlackMarket
+    );
+
+}
+if (blackMarketModal) {
+
+    blackMarketModal.addEventListener(
+        "click",
+        function (event) {
+
+            if (
+                event.target ===
+                blackMarketModal
+            ) {
+
+                closeBlackMarket();
+
+            }
+
+        }
+    );
+
+}
+if (exploreToggleButton) {
+
+    exploreToggleButton.addEventListener(
+        "click",
+        toggleExploration
+    );
+
+}
 
 window.addEventListener(
     "beforeunload",

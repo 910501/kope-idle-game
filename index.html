@@ -68,9 +68,28 @@
 
                 </div>
 
-                <p id="money">
-                    黑金晶片：0
-                </p>
+                <div class="money-status">
+
+    <p id="money">
+        黑金晶片：0
+    </p>
+
+    <button
+        id="black-market-open-btn"
+        class="black-market-icon-button"
+        type="button"
+        aria-label="開啟黑市"
+        title="黑市"
+    >
+
+        <img
+            src="images/ui/blackmarket.png"
+            alt=""
+        >
+
+    </button>
+
+</div>
 
             </section>
 
@@ -139,9 +158,12 @@
 
                         </div>
 
-                        <button id="explore-btn">
-                            開始探索
-                        </button>
+                        <div class="explore-controls">
+
+    <button id="explore-toggle-btn">
+</button>
+
+</div>
 
                     </div>
 
@@ -203,7 +225,6 @@
            <div id="materials-list"></div>
 
         </section>
-
 
         <!--========================
             特殊事件
@@ -301,7 +322,101 @@
 
     </div>
 
-    <!-- JavaScript 必須放在所有 HTML 元素之後 -->
+    <!--========================
+    廢土黑市彈窗
+========================-->
+<div
+    id="black-market-modal"
+    class="modal-overlay"
+    hidden
+>
+
+    <section
+        class="black-market-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="black-market-title"
+    >
+
+        <div class="black-market-header">
+
+            <div>
+
+                <p class="black-market-label">
+                    UNREGISTERED TRADE NETWORK
+                </p>
+
+                <h2 id="black-market-title">
+                    黑市交易站
+                </h2>
+
+            </div>
+
+            <button
+                id="black-market-close-btn"
+                class="modal-close-button"
+                type="button"
+                aria-label="關閉黑市"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <p class="black-market-description">
+            回收商只收有價值的東西，
+            也從不詢問它們原本屬於誰。
+        </p>
+
+        <div class="black-market-money">
+
+            目前持有：
+
+            <strong id="black-market-money">
+                0
+            </strong>
+
+            黑金晶片
+
+        </div>
+
+        <div class="black-market-sections">
+
+            <section class="black-market-section">
+
+                <h3>
+                    黑市收購
+                </h3>
+
+                <p class="black-market-section-description">
+                    出售回收素材，換取黑金晶片。
+                </p>
+
+                <div id="black-market-list">
+                </div>
+
+            </section>
+
+            <section class="black-market-section">
+
+                <h3>
+                    裝備改造
+                </h3>
+
+                <p class="black-market-section-description">
+                    購買來源不明但大概能用的改裝設備。
+                </p>
+
+                <div id="equipment-upgrade-list">
+                </div>
+
+            </section>
+
+        </div>
+
+    </section>
+
+</div>
     <script src="game.js"></script>
 
 
