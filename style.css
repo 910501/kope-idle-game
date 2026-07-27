@@ -23,7 +23,7 @@ body{
     整體容器
 ==============================*/
 
-..game-container {
+.game-container {
     width: min(1440px, 100%);
     min-height: 100vh;
 
@@ -296,7 +296,7 @@ body{
     line-height: 1.65;
 }
 
-//*==============================
+/*==============================
     特殊事件
 ==============================*/
 
@@ -336,4 +336,112 @@ body{
 }
 .event-panel[hidden] {
     display: none !important;
+}
+/*==============================
+    遊戲公告
+==============================*/
+.game-info-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.info-icon-button {
+    width: 42px;
+    height: 42px;
+    border: 1px solid white;
+    border-radius: 50%;
+    background: black;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.info-icon-button:hover {
+    background: white;
+    color: black;
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    background:
+        rgba(0, 0, 0, 0.75);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+}
+
+.modal-overlay[hidden] {
+    display: none;
+}
+
+.info-modal {
+    width: min(600px, 100%);
+    max-height: 80vh;
+    overflow-y: auto;
+
+    border: 2px solid white;
+    background: black;
+    color: white;
+
+    padding: 24px;
+}
+
+.info-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border-bottom:
+        1px solid white;
+
+    padding-bottom: 12px;
+}
+
+.modal-close-button {
+    border: none;
+    background: transparent;
+    color: white;
+
+    font-size: 32px;
+    cursor: pointer;
+}
+
+.info-modal-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    margin: 18px 0;
+}
+
+.info-modal-tabs button {
+    border: 1px solid white;
+    background: black;
+    color: white;
+
+    padding: 8px 14px;
+    cursor: pointer;
+}
+
+.info-modal-tabs button:hover {
+    background: white;
+    color: black;
+}
+
+.info-modal-content {
+    line-height: 1.8;
+}
+
+.info-modal-content h3 {
+    margin-top: 22px;
+}
+
+.info-modal-content h3:first-child {
+    margin-top: 0;
 }

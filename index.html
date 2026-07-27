@@ -12,7 +12,6 @@
 
 <body>
 
-   <body>
 
     <main class="game-container">
 
@@ -24,6 +23,29 @@
             <h1 class="game-title">
                 KO-PE Idle
             </h1>
+			<div class="game-info-buttons">
+
+    <button
+        id="announcement-btn"
+        class="info-icon-button"
+        type="button"
+        aria-label="開啟系統公告"
+        title="系統公告"
+    >
+        !
+    </button>
+
+    <button
+        id="credits-btn"
+        class="info-icon-button"
+        type="button"
+        aria-label="開啟製作名單"
+        title="製作名單"
+    >
+        i
+    </button>
+
+</div>
 
             <section class="player-status">
 
@@ -178,17 +200,7 @@
                 回收素材
             </h2>
 
-            <div class="material-list">
-
-                <p id="scrap">
-                    廢鐵：0
-                </p>
-
-                <p id="wire">
-                    破損電線：0
-                </p>
-
-            </div>
+           <div id="materials-list"></div>
 
         </section>
 
@@ -220,11 +232,78 @@
         </section>
 
     </main>
+    </main>
 
+    <!--========================
+        遊戲資訊彈窗
+    ========================-->
+    <div
+        id="info-modal"
+        class="modal-overlay"
+        hidden
+    >
 
+        <section
+            class="info-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="info-modal-title"
+        >
+
+            <div class="info-modal-header">
+
+                <h2 id="info-modal-title">
+                    系統公告
+                </h2>
+
+                <button
+                    id="info-modal-close"
+                    class="modal-close-button"
+                    type="button"
+                    aria-label="關閉視窗"
+                >
+                    ×
+                </button>
+
+            </div>
+
+            <nav class="info-modal-tabs">
+
+                <button
+                    type="button"
+                    data-info-page="announcement"
+                >
+                    公告
+                </button>
+
+                <button
+                    type="button"
+                    data-info-page="credits"
+                >
+                    製作名單
+                </button>
+
+                <button
+                    type="button"
+                    data-info-page="thanks"
+                >
+                    感謝名單
+                </button>
+
+            </nav>
+
+            <div
+                id="info-modal-content"
+                class="info-modal-content"
+            ></div>
+
+        </section>
+
+    </div>
+
+    <!-- JavaScript 必須放在所有 HTML 元素之後 -->
     <script src="game.js"></script>
 
-</body>></script>
 
 </body>
 

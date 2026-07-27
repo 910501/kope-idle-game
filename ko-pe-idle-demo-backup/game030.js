@@ -1,6 +1,6 @@
 //==========================================
 // KO-PE Idle Demo
-// Version 0.3.2
+// Version 0.3.0
 //
 // 已完成：
 // ✔ 玩家系統
@@ -10,12 +10,13 @@
 // ✔ 探索狀態
 // ✔ 倒數計時
 // ✔ 事件系統
-// ✔ uiux設計
-// ✔ 存檔系統
-// ✔ 新素材與掉落表
+// ✔ uiux
 // 下一步：
+// □ 存檔系統
 // □ 角色立繪切換
 // □ KO-PE 台詞系統
+// □ 新增第三個地區
+// □ 新素材與掉落表
 // □ 基地升級或簡單商店
 // □ 離線收益
 // □ 圖鑑與成就
@@ -51,8 +52,6 @@ const player = {
     currentArea: 1,
 	
 	exploringAreaId: null,
-	
-	materials: {},
 
     isExploring: false,
 
@@ -63,33 +62,16 @@ const player = {
     "歡迎來到 KO-PE Idle！"
 ],
 
+    materials: {
+
+        scrap: 0,
+
+        wire: 0
+
+    }
+
 };
 
-function initializePlayerMaterials() {
-
-    materialData.forEach(
-        function (material) {
-
-            const amount =
-                player.materials[
-                    material.id
-                ];
-
-            if (
-                typeof amount !== "number" ||
-                !Number.isFinite(amount)
-            ) {
-
-                player.materials[
-                    material.id
-                ] = 0;
-
-            }
-
-        }
-    );
-
-}
 //========================
 // 存檔系統
 //========================
@@ -116,8 +98,14 @@ function saveGame() {
             player.currentArea,
 
         materials: {
-			...player.materials
-}
+
+            scrap:
+                player.materials.scrap,
+
+            wire:
+                player.materials.wire
+
+        }
 
     };
 
@@ -209,17 +197,29 @@ function loadGame() {
 
         }
 
-        if (
-    savedData.materials &&
-    typeof savedData.materials === "object"
-) {
+        if (savedData.materials) {
 
-    player.materials = {
-        ...player.materials,
-        ...savedData.materials
-    };
+            if (
+                typeof savedData.materials.scrap ===
+                "number"
+            ) {
 
-}
+                player.materials.scrap =
+                    savedData.materials.scrap;
+
+            }
+
+            if (
+                typeof savedData.materials.wire ===
+                "number"
+            ) {
+
+                player.materials.wire =
+                    savedData.materials.wire;
+
+            }
+
+        }
 
         // 每次載入都重設暫時狀態
         player.isExploring = false;
@@ -249,118 +249,6 @@ function loadGame() {
     }
 
 }
-//========================
-// 遊戲公告
-//========================
-
-const gameInfoData = {
-
-    announcement: {
-
-        title: "系統公告",
-
-        content: `
-            <h3>KO-PE Idle Demo</h3>
-
-            <p>
-                歡迎遊玩 KO-PE Idle！
-            </p>
-
-            <p>
-                目前版本仍在開發與測試階段，
-                部分功能與數值可能持續調整。
-            </p>
-
-            <h3>目前版本</h3>
-
-            <p>
-                Version 0.3.2
-            </p>
-        `
-
-    },
-
-    credits: {
-
-        title: "製作名單",
-
-        content: `
-            <h3>遊戲製作</h3>
-
-            <p>
-                企劃、程式、介面：
-                sumime
-            </p>
-
-            <h3>原作</h3>
-			<p>卿卿我我 科佩
-			<p>
-            <p>
-                原作者：
-                路人A
-            </p>
-
-            <p>
-                本作已取得原作者授權製作。<br>
-				場景及部分物件使用ai生成。
-            </p>
-        `
-
-    },
-
-    thanks: {
-
-        title: "感謝名單",
-
-        content: `
-            <h3>特別感謝</h3>
-
-            <p>
-                原作者的授權與協助
-            </p>
-
-            <p>
-                參與測試與提供意見的朋友
-            </p>
-
-            <p>
-                所有遊玩 KO-PE Idle 的玩家
-            </p>
-        `
-
-    }
-
-};
-//========================
-// 素材資料
-//========================
-
-const materialData = [
-
-    {
-        id: "scrap",
-        name: "廢鐵"
-    },
-
-    {
-        id: "wire",
-        name: "破損電線"
-    },
-
-    {
-        id: "motor",
-        name: "老舊馬達"
-    },
-
-    {
-        id: "circuit",
-        name: "損壞電路板"
-    },
-	{
-    id: "cloth",
-    name: "破舊布料"
-	}
-];
 //========================
 // 地區資料
 //========================
@@ -440,19 +328,23 @@ const areas = [
         "images/areas/Old shopping mall.jpg",
 
     drops: [
-    {
-        material: "motor",
-        chance: 0.5,
-        min: 1,
-        max: 2
-    },
-    {
-        material: "circuit",
-        chance: 0.25,
-        min: 1,
-        max: 1
-    }
-],
+
+        {
+            material: "scrap",
+            chance: 0.9,
+            min: 2,
+            max: 6
+        },
+
+        {
+            material: "wire",
+            chance: 0.65,
+            min: 1,
+            max: 4
+        }
+
+    ],
+
     eventChance: 0.04
 }
 ]
@@ -723,7 +615,10 @@ function randomInteger(min, max) {
 // 計算一次探索獲得的隨機素材
 function rollAreaDrops(area) {
 
-    const obtainedMaterials = {};
+    const obtainedMaterials = {
+        scrap: 0,
+        wire: 0
+    };
 
     area.drops.forEach(function (drop) {
 
@@ -738,19 +633,6 @@ function rollAreaDrops(area) {
                     drop.max
                 );
 
-            // 第一次取得這種素材時，先建立為 0
-            if (
-                typeof obtainedMaterials[
-                    drop.material
-                ] !== "number"
-            ) {
-
-                obtainedMaterials[
-                    drop.material
-                ] = 0;
-
-            }
-
             obtainedMaterials[
                 drop.material
             ] += amount;
@@ -759,78 +641,17 @@ function rollAreaDrops(area) {
 
     });
 
-    // 如果這輪完全沒有掉落，
-    // 至少給予掉落表中的第一種素材
+    // 避免一次探索完全沒有素材
     if (
-        Object.keys(
-            obtainedMaterials
-        ).length === 0 &&
-        area.drops.length > 0
+        obtainedMaterials.scrap === 0 &&
+        obtainedMaterials.wire === 0
     ) {
 
-        const guaranteedDrop =
-            area.drops[0];
-
-        obtainedMaterials[
-            guaranteedDrop.material
-        ] = guaranteedDrop.min;
+        obtainedMaterials.scrap = 1;
 
     }
 
     return obtainedMaterials;
-
-}
-// 尋找素材名稱
-function getMaterialName(materialId) {
-
-    const material =
-        materialData.find(
-            function (item) {
-
-                return item.id ===
-                    materialId;
-
-            }
-        );
-
-    if (material) {
-        return material.name;
-    }
-
-    return materialId;
-
-}
-// 將素材獎勵加入玩家背包
-function giveMaterialRewards(rewards) {
-
-    Object.entries(rewards).forEach(
-        function ([materialId, amount]) {
-
-            if (
-                typeof amount !== "number" ||
-                amount <= 0
-            ) {
-                return;
-            }
-
-            if (
-                typeof player.materials[
-                    materialId
-                ] !== "number"
-            ) {
-
-                player.materials[
-                    materialId
-                ] = 0;
-
-            }
-
-            player.materials[
-                materialId
-            ] += amount;
-
-        }
-    );
 
 }
 //========================
@@ -999,69 +820,6 @@ newlyUnlockedAreas.forEach(
 
 }
 //========================
-// 遊戲資訊彈窗
-//========================
-
-function openInfoModal(pageId) {
-
-    const modal =
-        document.getElementById(
-            "info-modal"
-        );
-
-    const modalTitle =
-        document.getElementById(
-            "info-modal-title"
-        );
-
-    const modalContent =
-        document.getElementById(
-            "info-modal-content"
-        );
-
-    const page =
-        gameInfoData[pageId];
-
-    if (
-        !modal ||
-        !modalTitle ||
-        !modalContent ||
-        !page
-    ) {
-
-        console.error(
-            "無法開啟遊戲資訊彈窗。"
-        );
-
-        return;
-
-    }
-
-    modalTitle.textContent =
-        page.title;
-
-    modalContent.innerHTML =
-        page.content;
-
-    modal.hidden = false;
-
-}
-// 關閉彈窗
-function closeInfoModal() {
-
-    const modal =
-        document.getElementById(
-            "info-modal"
-        );
-
-    if (!modal) {
-        return;
-    }
-
-    modal.hidden = true;
-
-}
-//========================
 // 畫面更新
 //========================
 function updateUI() {
@@ -1201,45 +959,19 @@ function updateAreaUI() {
 
 function updateMaterialUI() {
 
-    const materialsList =
-        document.getElementById(
-            "materials-list"
-        );
+    const scrapElement =
+        document.getElementById("scrap");
 
-    if (!materialsList) {
+    const wireElement =
+        document.getElementById("wire");
 
-        console.error(
-            '找不到 id="materials-list" 的 HTML 元素。'
-        );
+    scrapElement.textContent =
+        "廢鐵：" +
+        player.materials.scrap;
 
-        return;
-
-    }
-
-    materialsList.innerHTML = "";
-
-    materialData.forEach(
-        function (material) {
-
-            const materialRow =
-                document.createElement("p");
-
-            const amount =
-                player.materials[
-                    material.id
-                ] || 0;
-
-            materialRow.textContent =
-                material.name +
-                "：" +
-                amount;
-
-            materialsList.appendChild(
-                materialRow
-            );
-
-        }
-    );
+    wireElement.textContent =
+        "破損電線：" +
+        player.materials.wire;
 
 }
 
@@ -1537,37 +1269,32 @@ function finishExploration() {
     const obtainedMaterials =
     rollAreaDrops(exploredArea);
 
-giveMaterialRewards(
-    obtainedMaterials
-);
+	player.materials.scrap +=
+    obtainedMaterials.scrap;
 
-const rewardTexts = [
+	player.materials.wire +=
+    obtainedMaterials.wire;
+    const rewardTexts = [
     "EXP +" + expReward
 ];
 
-Object.entries(
-    obtainedMaterials
-).forEach(
-    function ([materialId, amount]) {
+if (obtainedMaterials.scrap > 0) {
 
-        if (
-            typeof amount !== "number" ||
-            amount <= 0
-        ) {
-            return;
-        }
+    rewardTexts.push(
+        "廢鐵 +" +
+        obtainedMaterials.scrap
+    );
 
-        rewardTexts.push(
-            getMaterialName(
-                materialId
-            ) +
-            " +" +
-            amount
-        );
+}
 
-    }
-);
+if (obtainedMaterials.wire > 0) {
 
+    rewardTexts.push(
+        "破損電線 +" +
+        obtainedMaterials.wire
+    );
+
+}
 
 addLog(
     "在「" +
@@ -1590,118 +1317,6 @@ if (eventTriggered) {
 startExploration();
 
 }
-
-const announcementButton =
-    document.getElementById(
-        "announcement-btn"
-    );
-
-const creditsButton =
-    document.getElementById(
-        "credits-btn"
-    );
-
-const infoModal =
-    document.getElementById(
-        "info-modal"
-    );
-
-const infoModalCloseButton =
-    document.getElementById(
-        "info-modal-close"
-    );
-
-const infoTabButtons =
-    document.querySelectorAll(
-        "[data-info-page]"
-    );
-	if (announcementButton) {
-
-    announcementButton.addEventListener(
-        "click",
-        function () {
-
-            openInfoModal(
-                "announcement"
-            );
-
-        }
-    );
-
-}
-if (creditsButton) {
-
-    creditsButton.addEventListener(
-        "click",
-        function () {
-
-            openInfoModal(
-                "credits"
-            );
-
-        }
-    );
-
-}
-if (infoModalCloseButton) {
-
-    infoModalCloseButton.addEventListener(
-        "click",
-        closeInfoModal
-    );
-
-}
-infoTabButtons.forEach(
-    function (button) {
-
-        button.addEventListener(
-            "click",
-            function () {
-
-                const pageId =
-                    button.dataset.infoPage;
-
-                openInfoModal(
-                    pageId
-                );
-
-            }
-        );
-
-    }
-);
-if (infoModal) {
-
-    infoModal.addEventListener(
-        "click",
-        function (event) {
-
-            if (
-                event.target ===
-                infoModal
-            ) {
-
-                closeInfoModal();
-
-            }
-
-        }
-    );
-
-}
-document.addEventListener(
-    "keydown",
-    function (event) {
-
-        if (event.key === "Escape") {
-
-            closeInfoModal();
-
-        }
-
-    }
-);
-
 //========================
 // 遊戲開始
 //========================
@@ -1722,11 +1337,7 @@ window.addEventListener(
 
     }
 );
-initializePlayerMaterials();
 
 loadGame();
-
-// 為舊存檔補上新增素材
-initializePlayerMaterials();
 
 updateUI();
