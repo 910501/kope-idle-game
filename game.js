@@ -1,6 +1,6 @@
 //==========================================
 // KO-PE Idle Demo
-// Version 0.3.2
+// Version 0.3.5
 //
 // 已完成：
 // ✔ 玩家系統
@@ -13,8 +13,8 @@
 // ✔ uiux設計
 // ✔ 存檔系統
 // ✔ 新素材與掉落表
+// ✔ 角色立繪切換
 // 下一步：
-// □ 角色立繪切換
 // □ KO-PE 台詞系統
 // □ 基地升級或簡單商店
 // □ 離線收益
@@ -28,7 +28,7 @@
 const DEBUG = false;
 const DEBUG_EXP = 100;
 const DEBUG_TIME = 1;
-const DEBUG_EVENT_CHANCE = null;
+const DEBUG_EVENT_CHANCE = 1;
 //========================
 // 存檔設定
 //========================
@@ -49,19 +49,24 @@ const player = {
     money: 0,
 
     currentArea: 1,
-	
-	exploringAreaId: null,
-	
-	materials: {},
+
+    exploringAreaId: null,
+
+    materials: {},
+
+    discoveredAreas: [],
 
     isExploring: false,
 
     remainingTime: 0,
-	activeEvent: null,
-	characterState: "idle",
-	logs: [
-    "歡迎來到 KO-PE Idle！"
-],
+
+    activeEvent: null,
+
+    characterState: "idle",
+
+    logs: [
+        "歡迎來到 KO-PE Idle！"
+    ]
 
 };
 
@@ -98,28 +103,32 @@ function saveGame() {
 
     const saveData = {
 
-        version: 1,
+    version: 1,
 
-        level:
-            player.level,
+    level:
+        player.level,
 
-        exp:
-            player.exp,
+    exp:
+        player.exp,
 
-        expToNextLevel:
-            player.expToNextLevel,
+    expToNextLevel:
+        player.expToNextLevel,
 
-        money:
-            player.money,
+    money:
+        player.money,
 
-        currentArea:
-            player.currentArea,
+    currentArea:
+        player.currentArea,
 
-        materials: {
-			...player.materials
-}
+    materials: {
+        ...player.materials
+    },
 
-    };
+    discoveredAreas: [
+        ...player.discoveredAreas
+    ]
+
+};
 
     localStorage.setItem(
         SAVE_KEY,
@@ -209,15 +218,48 @@ function loadGame() {
 
         }
 
-        if (
+if (
     savedData.materials &&
-    typeof savedData.materials === "object"
+    typeof savedData.materials ===
+        "object"
 ) {
 
     player.materials = {
         ...player.materials,
         ...savedData.materials
     };
+
+}
+
+if (
+    Array.isArray(
+        savedData.discoveredAreas
+    )
+) {
+
+    player.discoveredAreas =
+        savedData.discoveredAreas;
+
+}
+
+// 舊存檔相容處理：
+// 已有地下設施秘鑰時，自動補上第五區發現紀錄
+const hasUndergroundKey =
+    (
+        player.materials[
+            "undergroundKey"
+        ] || 0
+    ) > 0;
+
+const hasDiscoveredArea5 =
+    player.discoveredAreas.includes(5);
+
+if (
+    hasUndergroundKey &&
+    !hasDiscoveredArea5
+) {
+
+    player.discoveredAreas.push(5);
 
 }
 
@@ -268,13 +310,14 @@ const gameInfoData = {
 
             <p>
                 目前版本仍在開發與測試階段，
-                部分功能與數值可能持續調整。
-            </p>
+                部分功能與數值可能持續調整。<br>
+				回饋表單:https://reurl.cc/NOZoOn
+			<P>
 
             <h3>目前版本</h3>
 
             <p>
-                Version 0.3.2
+                Version 0.3.5
             </p>
         `
 
@@ -288,7 +331,7 @@ const gameInfoData = {
             <h3>遊戲製作</h3>
 
             <p>
-                企劃、程式、介面：
+                企劃、程式、UI介面：
                 sumime
             </p>
 
@@ -337,29 +380,167 @@ const gameInfoData = {
 
 const materialData = [
 
+    //====================
+    // 基礎回收物
+    //====================
+
     {
         id: "scrap",
-        name: "廢鐵"
+        name: "銹蝕廢金屬",
+        category: "common",
+        description:
+            "被銹霧侵蝕的金屬碎片。" +
+            "經過重新熔煉後，仍可作為基礎維修材料。"
     },
 
     {
         id: "wire",
-        name: "破損電線"
+        name: "老化導線",
+        category: "common",
+        description:
+            "從建築與廢棄設備中拆下的導線。" +
+            "外層已經脆化，但內部金屬仍有回收價值。"
     },
 
     {
-        id: "motor",
-        name: "老舊馬達"
+        id: "polymer",
+        name: "耐蝕聚合物",
+        category: "common",
+        description:
+            "舊時代使用的合成材料。" +
+            "能用於修補防護服、面罩與裝備外殼。"
+    },
+
+    {
+        id: "metalPlate",
+        name: "變形合金板",
+        category: "common",
+        description:
+            "從建築外牆與機械外殼拆下的合金板。" +
+            "表面變形，但仍可重新加工。"
+    },
+
+    {
+        id: "filterFiber",
+        name: "污染過濾纖維",
+        category: "common",
+        description:
+            "殘留於舊型空氣過濾設備中的特殊纖維。" +
+            "清理後可用於維修呼吸裝備。"
+    },
+
+    //====================
+    // 機械與電子零件
+    //====================
+
+    {
+        id: "battery",
+        name: "衰退蓄能電池",
+        category: "uncommon",
+        description:
+            "容量嚴重下降的舊式電池。" +
+            "部分單元仍能保存少量能源。"
     },
 
     {
         id: "circuit",
-        name: "損壞電路板"
+        name: "受蝕電路模組",
+        category: "uncommon",
+        description:
+            "遭到銹霧侵蝕的電子模組。" +
+            "其中仍可能保留可用的控制元件。"
     },
+
+    {
+        id: "motor",
+        name: "微型驅動核心",
+        category: "uncommon",
+        description:
+            "從自動門、輸送設備或智械中拆下的驅動裝置。" +
+            "維修後仍可重新運轉。"
+    },
+
+    {
+        id: "sensor",
+        name: "感應器組件",
+        category: "uncommon",
+        description:
+            "舊文明設備使用的環境感應器。" +
+            "可偵測溫度、動作或空氣成分。"
+    },
+
+    //====================
+    // 稀有回收物
+    //====================
+
+    {
+        id: "foodPack",
+        name: "密封合成食品",
+        category: "uncommon",
+        description:
+            "包裝尚未破損的舊時代合成食品。" +
+            "是否還能食用，通常取決於科佩有多勇敢。"
+    },
+
+    {
+        id: "energyCrystal",
+        name: "微型能源結晶",
+        category: "rare",
+        description:
+            "能夠穩定儲存高密度能源的人工結晶。" +
+            "是光譜層維修能源設備的重要材料。"
+    },
+
+    {
+        id: "intactChip",
+        name: "完整運算晶片",
+        category: "rare",
+        description:
+            "少數未被銹霧破壞的舊文明晶片。" +
+            "可用於精密設備與智械系統。"
+    },
+
+    {
+        id: "dataCarrier",
+        name: "舊文明資料載體",
+        category: "rare",
+        description:
+            "保存舊時代資料的儲存裝置。" +
+            "內容可能是重要研究紀錄，也可能只是三百年前的購物清單。"
+    },
+
+    {
+        id: "blackBox",
+        name: "密封黑盒",
+        category: "rare",
+        description:
+            "具有高強度外殼的舊文明資料裝置。" +
+            "通常記錄著設備最後運作時的資訊。"
+    },
+
+    {
+        id: "machineCore",
+        name: "智械控制核心",
+        category: "rare",
+        description:
+            "失控智械的主要控制模組。" +
+            "具有極高回收價值，也可能仍在偷偷運算。"
+    },
+//========================
+// 劇情物品
+//========================
 	{
-    id: "cloth",
-    name: "破舊布料"
-	}
+    id: "rareSupplyMap",
+    name: "稀有物資座標",
+    category: "keyItem"
+},
+
+{
+    id: "undergroundKey",
+    name: "地下設施秘鑰",
+    category: "keyItem"
+}
+
 ];
 //========================
 // 地區資料
@@ -378,23 +559,38 @@ const areas = [
 
     drops: [
 
+    // 保底素材
     {
         material: "scrap",
-        chance: 0.7,
+        chance: 0.8,
         min: 1,
         max: 3
     },
 
     {
         material: "wire",
-        chance: 0.4,
+        chance: 0.45,
         min: 1,
         max: 2
+    },
+
+    {
+        material: "polymer",
+        chance: 0.3,
+        min: 1,
+        max: 2
+    },
+
+    {
+        material: "filterFiber",
+        chance: 0.12,
+        min: 1,
+        max: 1
     }
 
 ],
 
-    eventChance: 0.03
+    eventChance: 0.02
 	},
 
     {
@@ -409,21 +605,51 @@ const areas = [
 
     drops: [
 
+    // 保底素材
     {
         material: "scrap",
-        chance: 0.85,
+        chance: 0.9,
         min: 2,
         max: 5
     },
 
     {
-        material: "wire",
-        chance: 0.65,
+        material: "metalPlate",
+        chance: 0.55,
         min: 1,
-        max: 4
+        max: 3
+    },
+
+    {
+        material: "wire",
+        chance: 0.5,
+        min: 1,
+        max: 3
+    },
+
+    {
+        material: "battery",
+        chance: 0.25,
+        min: 1,
+        max: 2
+    },
+
+    {
+        material: "circuit",
+        chance: 0.12,
+        min: 1,
+        max: 1
+    },
+
+    {
+        material: "intactChip",
+        chance: 0.015,
+        min: 1,
+        max: 1
     }
+
 ],
-    eventChance: 0.05
+    eventChance: 0.03
 },
 {
     id: 3,
@@ -440,22 +666,191 @@ const areas = [
         "images/areas/Old shopping mall.jpg",
 
     drops: [
+
+    // 保底素材
     {
-        material: "motor",
-        chance: 0.5,
+        material: "polymer",
+        chance: 0.85,
+        min: 2,
+        max: 5
+    },
+
+    {
+        material: "battery",
+        chance: 0.55,
+        min: 1,
+        max: 3
+    },
+
+    {
+        material: "circuit",
+        chance: 0.4,
         min: 1,
         max: 2
     },
+
+    {
+        material: "motor",
+        chance: 0.25,
+        min: 1,
+        max: 2
+    },
+
+    {
+        material: "foodPack",
+        chance: 0.18,
+        min: 1,
+        max: 2
+    },
+
+    {
+        material: "sensor",
+        chance: 0.1,
+        min: 1,
+        max: 1
+    },
+
+    {
+        material: "energyCrystal",
+        chance: 0.025,
+        min: 1,
+        max: 1
+    },
+
+    {
+        material: "dataCarrier",
+        chance: 0.01,
+        min: 1,
+        max: 1
+    }
+
+],
+    eventChance: 0.04
+},
+{
+    id: 4,
+
+    name: "地下通道",
+
+    levelRequired: 12,
+
+    duration: 15,
+
+    expReward: 30,
+
+    image:
+        "images/areas/Underpass.jpg",
+
+    drops: [
+
+    // 保底素材
+    {
+        material: "metalPlate",
+        chance: 0.9,
+        min: 2,
+        max: 5
+    },
+
+    {
+        material: "filterFiber",
+        chance: 0.6,
+        min: 1,
+        max: 3
+    },
+
+    {
+        material: "wire",
+        chance: 0.5,
+        min: 2,
+        max: 4
+    },
+
+    {
+        material: "motor",
+        chance: 0.4,
+        min: 1,
+        max: 2
+    },
+
+    {
+        material: "sensor",
+        chance: 0.3,
+        min: 1,
+        max: 2
+    },
+
     {
         material: "circuit",
         chance: 0.25,
         min: 1,
+        max: 2
+    },
+
+    {
+        material: "energyCrystal",
+        chance: 0.05,
+        min: 1,
+        max: 1
+    },
+
+    {
+        material: "intactChip",
+        chance: 0.03,
+        min: 1,
+        max: 1
+    },
+
+    {
+        material: "blackBox",
+        chance: 0.01,
+        min: 1,
+        max: 1
+    },
+
+    {
+        material: "machineCore",
+        chance: 0.005,
+        min: 1,
         max: 1
     }
+
 ],
-    eventChance: 0.04
+    eventChance: 0.06
+},
+{
+    id: 5,
+
+    name: "封鎖的地下設施",
+
+    levelRequired: 10,
+
+    requiredItem:
+        "undergroundKey",
+		
+	secretUnlock: true,
+	
+	hiddenUntilDiscovered: true,
+	
+    duration: 20,
+
+    expReward: 50,
+
+    image:
+        "images/areas/underground-facility.jpg",
+
+    drops: [
+        {
+            material: "circuit",
+            chance: 0.7,
+            min: 1,
+            max: 3
+        }
+		
+    ],
+
+    eventChance: 0.08
 }
-]
+];
 
 //========================
 // 角色立繪資料
@@ -479,12 +874,16 @@ const characterImages = {
         "images/kope/failure.png"
 
 };
+
 //========================
 // 特殊事件資料
 //========================
 
 const events = [
 
+    //====================
+    // 事件 1：半埋的工具箱
+    //====================
     {
         id: 1,
 
@@ -498,168 +897,408 @@ const events = [
 
         options: [
 
+            // 選項 1
             {
                 text: "直接撬開",
 
                 successChance: 0.65,
 
                 success: {
+
                     log:
                         "科佩成功撬開工具箱，裡面的零件大致完好！",
 
-                    scrap: 5,
+                    rewards: [
 
-                    wire: 2
+                        {
+                            material: "scrap",
+                            min: 2,
+                            max: 5,
+                            chance: 1
+                        },
+
+                        {
+                            material: "wire",
+                            min: 1,
+                            max: 3,
+                            chance: 1
+                        }
+
+                    ]
+
                 },
 
                 failure: {
+
                     log:
-                        "工具箱突然短路。科佩帶回了一些冒煙的廢鐵。",
+                        "工具箱突然彈開，裡面的零件散落一地，大部分都已經損壞。",
 
-                    scrap: 1,
+                    rewards: [
 
-                    wire: 0
+                        {
+                            material: "scrap",
+                            min: 1,
+                            max: 2,
+                            chance: 1
+                        },
+
+                        {
+                            material: "wire",
+                            amount: 1,
+                            chance: 0.35
+                        }
+
+                    ]
+
                 }
+
             },
 
+            // 選項 2
             {
                 text: "小心拆除電線",
 
                 successChance: 0.9,
 
                 success: {
+
                     log:
-                        "科佩拆除了老舊線路，安全取出了箱內物資。",
+                        "科佩順利拆除電線，並安全打開了工具箱。",
 
-                    scrap: 3,
+                    rewards: [
 
-                    wire: 4
+                        {
+                            material: "scrap",
+                            min: 2,
+                            max: 4,
+                            chance: 1
+                        },
+
+                        {
+                            material: "wire",
+                            min: 2,
+                            max: 4,
+                            chance: 1
+                        },
+
+                        {
+                            material: "circuit",
+                            amount: 1,
+                            chance: 0.15
+                        }
+
+                    ]
+
                 },
 
                 failure: {
+
                     log:
-                        "其中一條電線碎成了粉末，只留下少量材料。",
+                        "老化的電線突然斷裂，工具箱內部冒出一陣焦煙。",
 
-                    scrap: 1,
+                    rewards: [
 
-                    wire: 1
+                        {
+                            material: "scrap",
+                            min: 1,
+                            max: 2,
+                            chance: 1
+                        },
+
+                        {
+                            material: "wire",
+                            amount: 1,
+                            chance: 0.5
+                        }
+
+                    ]
+
                 }
+
             },
 
+            // 選項 3
             {
                 text: "直接離開",
 
                 successChance: 1,
 
                 success: {
+
                     log:
-                        "科佩依依不捨地放棄了工具箱。至少這次沒有爆炸。",
+                        "科佩盯著工具箱看了一會兒，最後決定不要冒險。",
 
-                    scrap: 0,
+                    rewards: []
 
-                    wire: 0
                 },
 
                 failure: {
+
                     log: "",
 
-                    scrap: 0,
+                    rewards: []
 
-                    wire: 0
                 }
+
             }
 
         ]
-    },
-	{
-    id: 2,
 
-    title: "故障的服務機器人",
+    },
+
+    //====================
+    // 事件 2：故障的服務機器人
+    //====================
+    {
+        id: 2,
+
+        title: "故障的服務機器人",
+
+        description:
+            "街角倒著一台舊式服務機器人。" +
+            "它的指示燈仍在閃爍，並不斷重複播放一句模糊的歡迎詞。" +
+            "科佩看起來非常想把它叫醒。",
+
+        areaIds: [2],
+
+        options: [
+
+            // 選項 1
+            {
+                text: "嘗試重新啟動",
+
+                successChance: 0.5,
+
+                success: {
+
+    log:
+        "機器人短暫恢復運作，開始搜尋附近仍然有效的服務資料。" +
+        "它隨後投射出一組座標——那裡似乎藏著一批尚未被回收的物資！",
+
+    rewards: [
+
+        {
+            material: "scrap",
+            min: 2,
+            max: 5,
+            chance: 1
+        },
+
+        {
+            material: "wire",
+            min: 1,
+            max: 3,
+            chance: 1
+        },
+
+        {
+            material: "circuit",
+            min: 1,
+            max: 2,
+            chance: 0.45
+        },
+
+        {
+            material: "rareSupplyMap",
+            amount: 1,
+            chance: 0.2,
+            maxOwned: 1,
+
+            log:
+                "科佩記下了其中一處特別清晰的座標，這份資料或許能在之後派上用場。"
+        },
+
+        {
+            material: "undergroundKey",
+            amount: 1,
+            chance: 0.05,
+            maxOwned: 1,
+
+            log:
+                "機器人吐出一枚標有舊文明設施編號的秘鑰。" +
+                "秘鑰表面浮現出一串微弱座標，地圖邊緣似乎多出了一個從未標示過的訊號。"
+        }
+
+    ]
+
+},
+
+                failure: {
+
+                    log:
+                        "機器人突然發出刺耳警報，接著徹底斷電。",
+
+                    rewards: [
+
+                        {
+                            material: "scrap",
+                            min: 1,
+                            max: 2,
+                            chance: 1
+                        },
+
+                        {
+                            material: "wire",
+                            amount: 1,
+                            chance: 0.5
+                        }
+
+                    ]
+
+                }
+
+            },
+
+            // 選項 2
+            {
+                text: "拆下可用零件",
+
+                successChance: 0.85,
+
+                success: {
+
+                    log:
+                        "科佩熟練地拆下尚未腐蝕的零件。機器人最後說了一聲「謝謝惠顧」。",
+
+                    rewards: [
+
+                        {
+                            material: "scrap",
+                            min: 3,
+                            max: 6,
+                            chance: 1
+                        },
+
+                        {
+                            material: "wire",
+                            min: 2,
+                            max: 5,
+                            chance: 1
+                        },
+
+                        {
+                            material: "motor",
+                            amount: 1,
+                            chance: 0.3
+                        },
+
+                        {
+                            material: "circuit",
+                            amount: 1,
+                            chance: 0.2
+                        }
+
+                    ]
+
+                },
+
+                failure: {
+
+                    log:
+                        "機器人的內部結構比預想中脆弱，大部分零件在拆卸時碎裂了。",
+
+                    rewards: [
+
+                        {
+                            material: "scrap",
+                            min: 1,
+                            max: 2,
+                            chance: 1
+                        },
+
+                        {
+                            material: "wire",
+                            amount: 1,
+                            chance: 0.4
+                        }
+
+                    ]
+
+                }
+
+            },
+
+            // 選項 3
+            {
+                text: "不去打擾它",
+
+                successChance: 1,
+
+                success: {
+
+                    log:
+                        "科佩盯著機器人看了很久，最後勉強同意離開。",
+
+                    rewards: []
+
+                },
+
+                failure: {
+
+                    log: "",
+
+                    rewards: []
+
+                }
+
+            }
+
+        ]
+
+    }
+
+];
+/*新增事件用模板
+{
+    id: 3,
+
+    title: "事件名稱",
 
     description:
-        "街角倒著一台舊式服務機器人。" +
-        "它的指示燈仍在閃爍，並不斷重複播放一句模糊的歡迎詞。" +
-        "科佩看起來非常想把它叫醒。",
+        "事件描述。",
 
-    areaIds: [2],
+    areaIds: [],
 
     options: [
 
         {
-            text: "嘗試重新啟動",
+            text: "選項名稱",
 
             successChance: 0.5,
 
             success: {
+
                 log:
-                    "機器人短暫恢復運作，替科佩指出了一處零件儲藏點！",
+                    "成功訊息。",
 
-                scrap: 6,
+                rewards: [
 
-                wire: 3
+                    {
+                        material: "scrap",
+                        min: 1,
+                        max: 3,
+                        chance: 1
+                    }
+
+                ]
+
             },
 
             failure: {
+
                 log:
-                    "機器人突然發出刺耳警報，接著徹底斷電。",
+                    "失敗訊息。",
 
-                scrap: 1,
+                rewards: []
 
-                wire: 1
             }
-        },
 
-        {
-            text: "拆下可用零件",
-
-            successChance: 0.85,
-
-            success: {
-                log:
-                    "科佩熟練地拆下了尚未腐蝕的零件。機器人最後說了一聲「謝謝惠顧」。",
-
-                scrap: 4,
-
-                wire: 5
-            },
-
-            failure: {
-                log:
-                    "機器人的內部結構比預想中脆弱，只留下少量可用材料。",
-
-                scrap: 2,
-
-                wire: 1
-            }
-        },
-
-        {
-            text: "不去打擾它",
-
-            successChance: 1,
-
-            success: {
-                log:
-                    "科佩盯著機器人看了很久，最後勉強同意離開。",
-
-                scrap: 0,
-
-                wire: 0
-            },
-
-            failure: {
-                log: "",
-
-                scrap: 0,
-
-                wire: 0
-            }
         }
 
     ]
-}
 
-];
+}
+*/
 //========================
 // 地區功能
 //========================
@@ -670,6 +1309,77 @@ function getCurrentArea() {
         return area.id === player.currentArea;
     });
 }
+// 地區解鎖判定
+function isAreaUnlocked(area) {
+
+    const levelUnlocked =
+        player.level >=
+        area.levelRequired;
+
+    if (!levelUnlocked) {
+        return false;
+    }
+
+    // 沒有要求關鍵物時，只檢查等級
+    if (!area.requiredItem) {
+        return true;
+    }
+
+    return (
+        player.materials[
+            area.requiredItem
+        ] || 0
+    ) > 0;
+
+}
+function isAreaDiscovered(area) {
+
+    if (!area.hiddenUntilDiscovered) {
+        return true;
+    }
+
+    return player.discoveredAreas.includes(
+        area.id
+    );
+
+}
+function discoverArea(areaId) {
+
+    const area =
+        areas.find(function (area) {
+
+            return area.id === areaId;
+
+        });
+
+    if (!area) {
+        return false;
+    }
+
+    if (
+        player.discoveredAreas.includes(
+            areaId
+        )
+    ) {
+
+        return false;
+
+    }
+
+    player.discoveredAreas.push(
+        areaId
+    );
+
+    addLog(
+        "地圖邊緣出現了一個新的未知訊號……"
+    );
+
+    saveGame();
+
+    return true;
+
+}
+
 // 切換玩家下一輪探索的地區
 function changeArea(areaId) {
 
@@ -684,21 +1394,45 @@ function changeArea(areaId) {
         return;
     }
 
-    if (
-        player.level <
-        selectedArea.levelRequired
-    ) {
+    if (!isAreaUnlocked(selectedArea)) {
+
+    if (selectedArea.secretUnlock) {
 
         addLog(
-            "尚未達到「" +
-            selectedArea.name +
-            "」的需求等級。"
+            "這裡似乎隱藏著某個尚未發現的地點。"
         );
 
-        updateUI();
+    } else {
 
-        return;
+        let requirementText =
+            "需要 Lv." +
+            selectedArea.levelRequired;
+
+        if (selectedArea.requiredItem) {
+
+            requirementText +=
+                "，並持有「" +
+                getMaterialName(
+                    selectedArea.requiredItem
+                ) +
+                "」";
+
+        }
+
+        addLog(
+            "尚未解鎖「" +
+            selectedArea.name +
+            "」。" +
+            requirementText +
+            "。"
+        );
+
     }
+
+    updateUI();
+
+    return;
+}
 
     player.currentArea =
         selectedArea.id;
@@ -834,6 +1568,120 @@ function giveMaterialRewards(rewards) {
 
 }
 //========================
+// 通用事件獎勵系統
+//========================
+
+function giveEventRewards(rewards) {
+
+    const obtainedRewards = [];
+
+    if (!Array.isArray(rewards)) {
+        return obtainedRewards;
+    }
+
+    rewards.forEach(function (reward) {
+
+        if (!reward || !reward.material) {
+            return;
+        }
+
+        // 沒寫 chance 時，預設為 100%
+        const chance =
+            typeof reward.chance === "number"
+                ? reward.chance
+                : 1;
+
+        // 判定這項獎勵是否掉落
+        if (Math.random() >= chance) {
+            return;
+        }
+
+        const currentAmount =
+            player.materials[
+                reward.material
+            ] || 0;
+
+        // 已經達到最大持有量
+        if (
+            typeof reward.maxOwned === "number" &&
+            currentAmount >= reward.maxOwned
+        ) {
+            return;
+        }
+
+        let amount = 1;
+
+        // 固定數量
+        if (
+            typeof reward.amount === "number"
+        ) {
+
+            amount = reward.amount;
+
+        // 隨機數量
+        } else if (
+            typeof reward.min === "number" &&
+            typeof reward.max === "number"
+        ) {
+
+            amount = randomInteger(
+                reward.min,
+                reward.max
+            );
+
+        }
+
+        // 避免取得後超過最大持有量
+        if (
+            typeof reward.maxOwned === "number"
+        ) {
+
+            amount = Math.min(
+                amount,
+                reward.maxOwned -
+                    currentAmount
+            );
+
+        }
+
+        if (amount <= 0) {
+            return;
+        }
+
+        giveMaterialRewards({
+            [reward.material]: amount
+        });
+
+        // 取得地下設施秘鑰時，
+        // 記錄第五區已經被發現
+        if (
+            reward.material ===
+            "undergroundKey"
+        ) {
+
+            discoverArea(5);
+
+        }
+
+        obtainedRewards.push({
+
+            material:
+                reward.material,
+
+            amount:
+                amount,
+
+            log:
+                reward.log || ""
+
+        });
+
+    });
+
+    return obtainedRewards;
+
+}
+//========================
 // 特殊事件系統
 //========================
 
@@ -881,7 +1729,9 @@ function tryTriggerEvent(area) {
 
     player.activeEvent =
         availableEvents[randomIndex];
-
+	setCharacterState(
+    "event"
+	);
     addLog(
         "特殊事件發生：「" +
         player.activeEvent.title +
@@ -903,10 +1753,15 @@ function resolveEvent(optionIndex) {
             optionIndex
         ];
 
+    if (!selectedOption) {
+        return;
+    }
+
     const randomNumber =
         Math.random();
 
     let result;
+    let resultPrefix;
 
     if (
         randomNumber <
@@ -916,9 +1771,11 @@ function resolveEvent(optionIndex) {
         result =
             selectedOption.success;
 
-        addLog(
-            "事件成功：" +
-            result.log
+        resultPrefix =
+            "事件成功：";
+
+        setCharacterState(
+            "success"
         );
 
     } else {
@@ -926,24 +1783,85 @@ function resolveEvent(optionIndex) {
         result =
             selectedOption.failure;
 
+        resultPrefix =
+            "事件失敗：";
+
+        setCharacterState(
+            "failure"
+        );
+
+    }
+
+    if (result.log) {
+
         addLog(
-            "事件失敗：" +
+            resultPrefix +
             result.log
         );
 
     }
 
-    player.materials.scrap +=
-        result.scrap;
+    // 處理這個結果中的全部獎勵
+    const obtainedRewards =
+        giveEventRewards(
+            result.rewards
+        );
 
-    player.materials.wire +=
-        result.wire;
+    // 顯示實際取得的物品
+    if (obtainedRewards.length > 0) {
+
+        const rewardTexts =
+            obtainedRewards.map(
+                function (reward) {
+
+                    return (
+                        getMaterialName(
+                            reward.material
+                        ) +
+                        " +" +
+                        reward.amount
+                    );
+
+                }
+            );
+
+        addLog(
+            "事件獲得：" +
+            rewardTexts.join("、")
+        );
+
+        // 顯示個別稀有獎勵訊息
+        obtainedRewards.forEach(
+            function (reward) {
+
+                if (reward.log) {
+                    addLog(reward.log);
+                }
+
+            }
+        );
+
+    } else {
+
+        addLog(
+            "這次沒有取得額外物品。"
+        );
+
+    }
 
     player.activeEvent = null;
-	saveGame();
+
+    saveGame();
     updateUI();
 
-    startExploration();
+    setTimeout(
+        function () {
+
+            startExploration();
+
+        },
+        2000
+    );
 
 }
 //========================
@@ -978,8 +1896,12 @@ function checkLevelUp() {
 		const newlyUnlockedAreas =
     areas.filter(function (area) {
 
-        return area.levelRequired ===
-            player.level;
+        return (
+            area.levelRequired ===
+                player.level &&
+            isAreaUnlocked(area) &&
+            isAreaDiscovered(area)
+        );
 
     });
 
@@ -1059,6 +1981,29 @@ function closeInfoModal() {
     }
 
     modal.hidden = true;
+
+}
+//========================
+// 角色狀態切換
+//========================
+
+function setCharacterState(state) {
+
+    if (!characterImages[state]) {
+
+        console.warn(
+            "找不到角色狀態：" +
+            state
+        );
+
+        return;
+
+    }
+
+    player.characterState =
+        state;
+
+    updateCharacterUI();
 
 }
 //========================
@@ -1293,32 +2238,57 @@ function updateAreaSelectionUI() {
 
     areas.forEach(function (area) {
 
-        const areaButton =
-            document.createElement("button");
+    if (!isAreaDiscovered(area)) {
+        return;
+    }
 
-        const isUnlocked =
-            player.level >= area.levelRequired;
+		const areaButton =
+        document.createElement(
+            "button"
+        );
+
+		const isUnlocked =
+        isAreaUnlocked(area);
 
         const isSelected =
             player.currentArea === area.id;
 
         if (isUnlocked) {
 
-            areaButton.textContent =
-                area.name;
+    areaButton.textContent =
+        area.name;
 
-        } else {
+} else if (area.secretUnlock) {
 
-            areaButton.textContent =
-                area.name +
-                "（Lv." +
-                area.levelRequired +
-                " 解鎖）";
+    areaButton.textContent =
+        "？？？";
 
-        }
+} else {
+
+    let unlockText =
+        "Lv." +
+        area.levelRequired;
+
+    if (area.requiredItem) {
+
+        unlockText +=
+            "＋" +
+            getMaterialName(
+                area.requiredItem
+            );
+
+    }
+
+    areaButton.textContent =
+        area.name +
+        "（需要 " +
+        unlockText +
+        "）";
+
+}
 
         areaButton.disabled =
-            !isUnlocked || isSelected;
+		isSelected;
 
         if (isSelected) {
 
@@ -1436,6 +2406,10 @@ function updateCharacterUI() {
     characterImageElement.src =
         imagePath;
 
+    characterImageElement.alt =
+        "KO-PE：" +
+        player.characterState;
+
 }
 	
 //========================
@@ -1459,7 +2433,9 @@ function startExploration() {
     const currentArea = getCurrentArea();
 
     player.isExploring = true;
-
+	setCharacterState(
+    "exploring"
+);
     player.exploringAreaId =
         currentArea.id;
 
@@ -1728,5 +2704,7 @@ loadGame();
 
 // 為舊存檔補上新增素材
 initializePlayerMaterials();
-
+setCharacterState(
+    "idle"
+);
 updateUI();
