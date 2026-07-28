@@ -44,9 +44,27 @@
     >
         i
     </button>
+<button
+    id="save-manager-btn"
+    class="info-icon-button"
+    type="button"
+    aria-label="存檔管理"
+    title="存檔管理"
+>
+    💾
+</button>
 
+<button
+    id="developer-btn"
+    class="info-icon-button"
+    type="button"
+    aria-label="Developer Tools"
+    title="Developer Tools"
+    hidden
+>
+    ⚙
+</button>
 </div>
-
             <section class="player-status">
 
                 <div class="level-status">
@@ -253,7 +271,6 @@
         </section>
 
     </main>
-    </main>
 
     <!--========================
         遊戲資訊彈窗
@@ -428,14 +445,121 @@
 
     <div id="special-shop-list">
     </div>
+	</section>
+</div> <!-- black-market-sections -->
+</section> <!-- black-market-modal -->
+</div> <!-- black-market-overlay -->
+<div
+    id="save-manager-modal"
+    class="modal-overlay"
+    hidden
+>
 
-</section>
+    <section
+        class="info-modal"
+        role="dialog"
+        aria-modal="true"
+    >
+
+        <div class="info-modal-header">
+
+            <h2>
+                Save Manager
+            </h2>
+
+            <button
+                id="save-manager-close-btn"
+                class="modal-close-button"
+                type="button"
+            >
+                ×
+            </button>
+
         </div>
 
-    </section>
+        <div id="save-manager-content">
 
-</div>
-    <script src="game.js"></script>
+    <button
+        id="export-save-btn"
+        type="button"
+    >
+        匯出存檔
+    </button>
+
+    <button
+        id="import-save-btn"
+        type="button"
+    >
+        匯入存檔
+    </button>
+
+    <input
+        id="import-save-input"
+        type="file"
+        accept=".json"
+        hidden
+    >
+
+</div> <!-- save-manager-content -->
+
+</section> <!-- save-manager-modal -->
+
+</div> <!-- save-manager-modal overlay -->
+
+<div
+    id="developer-modal"
+    class="modal-overlay"
+    hidden
+>
+
+    <section
+        class="info-modal"
+        role="dialog"
+        aria-modal="true"
+    >
+
+        <div class="info-modal-header">
+
+            <h2>
+                Developer Tools
+            </h2>
+
+            <button
+                id="developer-close-btn"
+                class="modal-close-button"
+                type="button"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <div id="developer-content">
+
+    <button
+        id="debug-save-btn"
+        type="button"
+    >
+        載入 Debug 存檔
+    </button>
+
+
+</div> <!-- developer-content -->
+       </section> <!-- developer-modal -->
+
+</div> <!-- developer-modal overlay -->
+<script src="js/data/materials.js"></script>
+<script src="js/data/areas.js"></script>
+<script src="js/data/events.js"></script>
+<script src="js/data/dialogue.js"></script>
+<script src="js/data/character.js"></script>
+<script src="js/data/equipment.js"></script>
+
+<script src="js/core/player.js"></script>
+<script src="js/core/save.js"></script>
+<script src="js/core/debug.js"></script>
+
+<script src="js/game.js"></script>
 
 
 </body>
