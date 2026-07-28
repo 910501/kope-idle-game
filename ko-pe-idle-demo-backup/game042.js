@@ -1,6 +1,6 @@
 //==========================================
 // KO-PE Idle Demo
-// Version 0.4.2
+// Version 0.4.0
 //
 // 已完成：
 // ✔ 玩家系統
@@ -56,12 +56,6 @@ const player = {
 	equipmentLevels: {
 
     recoveryTools: 1
-
-},
-specialPurchases: {
-
-    stellarEnergyModule:
-        false
 
 },
 
@@ -137,10 +131,6 @@ function saveGame() {
 
 equipmentLevels: {
     ...player.equipmentLevels
-},
-
-specialPurchases: {
-    ...player.specialPurchases
 },
 
 discoveredAreas: [
@@ -262,20 +252,6 @@ if (
 
 }
 
-
-if (
-    savedData.specialPurchases &&
-    typeof savedData.specialPurchases ===
-        "object"
-) {
-
-    player.specialPurchases = {
-        ...player.specialPurchases,
-        ...savedData.specialPurchases
-    };
-
-}
-
 if (
     Array.isArray(
         savedData.discoveredAreas
@@ -362,7 +338,7 @@ const gameInfoData = {
             <h3>目前版本</h3>
 
             <p>
-                Version 0.4.2
+                Version 0.4.0
             </p>
         `
 
@@ -694,157 +670,6 @@ const equipmentData = [
     }
 
 ];
-//========================
-// 黑市特殊商品資料
-//========================
-const specialShopItems = [
-
-    {
-        id:
-            "stellarEnergyModule",
-
-        name:
-            "恆星級能源模組",
-
-        price:
-            1200000000,
-
-        description:
-            "舊文明時代最高規格的能源核心。" +
-            "在這資源逐漸匱乏的世界中，" +
-            "仍能完整運作的模組已經極為罕見。",
-
-        purpose:
-            "足以重新啟動一座因能源耗盡而廢棄的深潛站。"
-
-    }
-
-];
-function getSpecialShopItem(
-    itemId
-) {
-
-    return specialShopItems.find(
-        function (item) {
-
-            return item.id ===
-                itemId;
-
-        }
-    ) || null;
-
-}
-function purchaseSpecialShopItem(
-    itemId
-) {
-
-    const item =
-        getSpecialShopItem(
-            itemId
-        );
-
-    if (!item) {
-
-        console.warn(
-            "找不到特殊商品：" +
-            itemId
-        );
-
-        return false;
-
-    }
-
-    if (
-        hasPurchasedSpecialItem(
-            itemId
-        )
-    ) {
-
-        addLog(
-            "「" +
-            item.name +
-            "」已經購買。"
-        );
-
-        showRandomCharacterLine(
-            characterDialogue
-                .blackMarket
-                .stellarEnergyModule
-                .alreadyPurchased
-        );
-
-        return false;
-
-    }
-
-    if (
-        player.money <
-        item.price
-    ) {
-
-        const missingMoney =
-            item.price -
-            player.money;
-
-        addLog(
-            "無法購買「" +
-            item.name +
-            "」，尚缺少 " +
-            missingMoney.toLocaleString(
-                "zh-TW"
-            ) +
-            " 黑金晶片。"
-        );
-
-        showRandomCharacterLine(
-            characterDialogue
-                .blackMarket
-                .stellarEnergyModule
-                .notEnoughMoney
-        );
-
-        return false;
-
-    }
-
-    player.money -=
-        item.price;
-
-    player.specialPurchases[
-        itemId
-    ] = true;
-
-    addLog(
-        "已在黑市買下「" +
-        item.name +
-        "」。"
-    );
-
-    showRandomCharacterLine(
-        characterDialogue
-            .blackMarket
-            .stellarEnergyModule
-            .purchaseSuccess
-    );
-
-    saveGame();
-    updateUI();
-
-    return true;
-
-}
-
-function hasPurchasedSpecialItem(
-    itemId
-) {
-
-    return (
-        player.specialPurchases[
-            itemId
-        ] === true
-    );
-
-}
 // 取得指定裝備資料
 function getEquipment(
     equipmentId
@@ -1690,8 +1515,6 @@ const characterDialogue = {
 		"「全能嚮導從不迷路！我們只是在探索一條地圖上沒有記載的新路線！」",
 		
 		"「在這個爛透了的世界，能找到一個陪我這麽瘋的人，比在垃圾堆裡挖到黑金晶片還難。」",
-		
-		"「這附近有一個晶蝕變異體的巢穴喔，牠們的脊髓液在黑市一盎司能賣到兩百信用點呢！你想去端了牠們的老巢嗎？」",
 
         "「我知道你在想什麼，『科佩，這太危險了，輻射值還有點高』一一拜託，快樂本身就是一種高風險投資！」"
 
@@ -1764,7 +1587,7 @@ const characterDialogue = {
 
         "「黑市規則很簡單：不問來源，不接受退貨，記得數清楚晶片！」",
 
-        "「朋友，把背包看好。這裡的人看到完整晶片時，眼睛會比掃描器還亮。」"
+        "「朋友，把背包放好。這裡的人看到完整晶片時，眼睛會比掃描器還亮。」"
 
     ],
 
@@ -1818,49 +1641,9 @@ const characterDialogue = {
 
     "「這套工具已經完美了！至少在我想到下一個改法以前。」"
 
-],
-
-stellarEnergyModule: {
-
-    inspect: [
-
-        "「遙不可及的目標，對吧？」",
-
-        "「就是這個。恆星級能源模組。」",
-
-        "「十二億……他們還真敢開價。」"
-
-    ],
-
-    notEnoughMoney: [
-
-        "「遙不可及的目標，對吧？」",
-
-        "「還差得很遠。我知道。」",
-
-        "「沒關係。它至少還在這裡。」"
-
-    ],
-
-    purchaseSuccess: [
-
-        "「……我們真的買下來了。」",
-
-        "「走吧。深潛站等得夠久了。」"
-
-    ],
-
-    alreadyPurchased: [
-
-        "「它已經是我們的了。」",
-
-        "「下一步，是讓深潛站重新亮起來。」"
-
-    ]
-
+]
 }
-}
-}
+};
 //========================
 // 特殊事件資料
 //========================
@@ -4512,8 +4295,6 @@ function updateUI() {
 	
 	updateEquipmentUpgradeUI();
 	
-	updateSpecialShopUI();
-	
 	updateBlackMarketMoneyUI();
 }
 
@@ -5160,250 +4941,7 @@ function updateBlackMarketMoneyUI() {
         player.money;
 
 }
-function updateSpecialShopUI() {
 
-    const specialShopList =
-        document.getElementById(
-            "special-shop-list"
-        );
-
-    if (!specialShopList) {
-        return;
-    }
-
-    specialShopList.innerHTML = "";
-
-    specialShopItems.forEach(
-        function (item) {
-
-            const purchased =
-                hasPurchasedSpecialItem(
-                    item.id
-                );
-
-            const missingMoney =
-                Math.max(
-                    0,
-                    item.price -
-                    player.money
-                );
-
-            const card =
-                document.createElement(
-                    "article"
-                );
-
-            card.className =
-                "special-shop-item";
-
-            const title =
-                document.createElement(
-                    "h4"
-                );
-
-            title.textContent =
-                item.name;
-
-            const description =
-                document.createElement(
-                    "p"
-                );
-
-            description.textContent =
-                item.description;
-
-            const purpose =
-                document.createElement(
-                    "p"
-                );
-
-            purpose.className =
-                "special-shop-purpose";
-
-            purpose.textContent =
-                item.purpose;
-
-            const price =
-                document.createElement(
-                    "p"
-                );
-
-            price.className =
-                "special-shop-price";
-
-            price.textContent =
-                "價格：" +
-                item.price.toLocaleString(
-                    "zh-TW"
-                ) +
-                " 黑金晶片";
-
-            const status =
-                document.createElement(
-                    "p"
-                );
-
-            status.className =
-                "special-shop-status";
-
-            if (purchased) {
-
-                status.textContent =
-                    "狀態：已購入";
-
-            } else if (
-                missingMoney > 0
-            ) {
-
-                status.textContent =
-                    "距離目標尚差：" +
-                    missingMoney.toLocaleString(
-                        "zh-TW"
-                    ) +
-                    " 黑金晶片";
-
-            } else {
-
-                status.textContent =
-                    "已具備購買所需資金。";
-
-            }
-
-            const buttonGroup =
-                document.createElement(
-                    "div"
-                );
-
-            buttonGroup.className =
-                "special-shop-actions";
-
-            const inspectButton =
-                document.createElement(
-                    "button"
-                );
-
-            inspectButton.type =
-                "button";
-
-            inspectButton.textContent =
-                "查看";
-
-            inspectButton.addEventListener(
-                "click",
-                function () {
-
-                    inspectSpecialShopItem(
-                        item.id
-                    );
-
-                }
-            );
-
-            const purchaseButton =
-                document.createElement(
-                    "button"
-                );
-
-            purchaseButton.type =
-                "button";
-
-            if (purchased) {
-
-                purchaseButton.textContent =
-                    "已購入";
-
-                purchaseButton.disabled =
-                    true;
-
-            } else {
-
-                purchaseButton.textContent =
-                    "購買";
-
-                /*
-                 * 這裡刻意不因金額不足而停用。
-                 * 玩家仍可按下，並聽見科佩的專屬台詞。
-                 */
-                purchaseButton.disabled =
-                    false;
-
-                purchaseButton.addEventListener(
-                    "click",
-                    function () {
-
-                        purchaseSpecialShopItem(
-                            item.id
-                        );
-
-                    }
-                );
-
-            }
-
-            buttonGroup.appendChild(
-                inspectButton
-            );
-
-            buttonGroup.appendChild(
-                purchaseButton
-            );
-
-            card.appendChild(
-                title
-            );
-
-            card.appendChild(
-                description
-            );
-
-            card.appendChild(
-                purpose
-            );
-
-            card.appendChild(
-                price
-            );
-
-            card.appendChild(
-                status
-            );
-
-            card.appendChild(
-                buttonGroup
-            );
-
-            specialShopList.appendChild(
-                card
-            );
-
-        }
-    );
-
-}
-function openBlackMarket() {
-
-    if (!blackMarketModal) {
-        return;
-    }
-
-    blackMarketModal.hidden =
-        false;
-
-    showRandomCharacterLine(
-        characterDialogue
-            .blackMarket
-            .open
-    );
-
-    updateBlackMarketUI();
-
-    updateEquipmentUpgradeUI();
-
-    updateSpecialShopUI();
-
-    updateBlackMarketMoneyUI();
-
-}
 //========================
 // 立繪切換
 //========================

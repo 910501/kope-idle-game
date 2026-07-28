@@ -787,3 +787,59 @@ body{
     cursor: default;
 
 }
+.special-shop-section {
+    grid-column: 1 / -1;
+}
+.special-shop-item {
+    padding: 20px;
+
+    border: 1px solid
+        rgba(255, 255, 255, 0.65);
+
+    background:
+        rgba(255, 255, 255, 0.025);
+}
+
+.special-shop-item h4 {
+    margin:
+        0 0 14px;
+
+    font-size: 1.25rem;
+    letter-spacing: 0.04em;
+}
+
+.special-shop-item p {
+    margin:
+        8px 0;
+}
+
+.special-shop-purpose {
+    padding-left: 12px;
+
+    border-left: 2px solid
+        rgba(255, 255, 255, 0.65);
+
+    opacity: 0.85;
+}
+
+.special-shop-price {
+    margin-top: 18px !important;
+
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.special-shop-status {
+    opacity: 0.75;
+}
+
+.special-shop-actions {
+    display: flex;
+    gap: 10px;
+
+    margin-top: 16px;
+}
+
+.special-shop-actions button {
+    min-width: 100px;
+}
