@@ -1,6 +1,6 @@
 //==========================================
 // KO-PE Idle Demo
-// Version 0.4.4
+// Version 0.4.41
 //
 // 已完成：
 // ✔ 玩家系統
@@ -56,7 +56,7 @@ const gameInfoData = {
             <h3>目前版本</h3>
 
             <p>
-                Version 0.4.4
+                Version 0.4.41
             </p>
         `
 

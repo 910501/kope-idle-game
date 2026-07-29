@@ -1,4 +1,64 @@
+//========================
+// 事件提示
+//========================
 
+const DEFAULT_TITLE = "KO-PE Idle";
+
+function setEventTitle() {
+
+    document.title =
+        "【！】KO-PE 正在等你";
+
+}
+
+function restoreTitle() {
+
+    document.title =
+        DEFAULT_TITLE;
+
+}
+
+function playEventSound() {
+
+    try {
+
+        const audioContext =
+            new (
+                window.AudioContext ||
+                window.webkitAudioContext
+            )();
+
+        const oscillator =
+            audioContext.createOscillator();
+
+        const gain =
+            audioContext.createGain();
+
+        oscillator.type = "triangle";
+
+        oscillator.frequency.value = 880;
+
+        gain.gain.value = 0.03;
+
+        oscillator.connect(gain);
+
+        gain.connect(
+            audioContext.destination
+        );
+
+        oscillator.start();
+
+        oscillator.stop(
+            audioContext.currentTime + 0.15
+        );
+
+    } catch (error) {
+
+        // 瀏覽器不支援就略過
+
+    }
+
+}
 //========================
 // 特殊事件系統
 //========================
@@ -72,7 +132,15 @@ function tryTriggerEvent(area) {
         );
 
     player.activeEvent =
-    availableEvents[randomIndex];
+availableEvents[randomIndex];
+
+playEventSound();
+
+setEventTitle();
+
+setCharacterState(
+    "event"
+);
 
 setCharacterState(
     "event"
@@ -86,6 +154,13 @@ addLog(
     "【特殊事件】" +
     player.activeEvent.title
 );
+if (document.hidden) {
+
+    addLog(
+        "（事件等待處理中）"
+    );
+
+}
 
     return true;
 
@@ -227,7 +302,9 @@ if (obtainedRewards.length > 0) {
 }
 
     player.activeEvent = null;
-
+	
+	restoreTitle();
+	
     saveGame();
     updateUI();
 
@@ -242,3 +319,21 @@ if (obtainedRewards.length > 0) {
 
 }
 
+document.addEventListener(
+
+    "visibilitychange",
+
+    function () {
+
+        if (
+            !document.hidden &&
+            !player.activeEvent
+        ) {
+
+            restoreTitle();
+
+        }
+
+    }
+
+);
