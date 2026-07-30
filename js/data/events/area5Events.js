@@ -4,7 +4,7 @@
 
 const area5Events = [
 
-	// 事件 13：仍在運作的研究AI
+	// 第五區事件1：仍在運作的研究AI
 {
     id: "lab_ai",
     title: "仍在運作的研究AI",
@@ -94,7 +94,7 @@ const area5Events = [
 
     ]
 },
-	// 事件 14：空蕩的培養槽
+	// 第五區事件2：空蕩的培養槽
 	{
     id: "lab_tank",
     title: "空蕩的培養槽",
@@ -194,7 +194,7 @@ const area5Events = [
 
     ]
 },
-	// 事件 15：最後的辦公室
+	// 第五區事件3：最後的辦公室
 {
     id: "lab_office",
     title: "最後的辦公室",

@@ -1,5 +1,5 @@
 const commonEvents = [
-// 通用事件 ：遺落的背包
+// 通用事件1 ：遺落的背包
 {
     id: "common_backpack",
 
@@ -86,7 +86,7 @@ const commonEvents = [
 
 },
 
-// 通用事件 ：巡迴配送
+// 通用事件2 ：巡迴配送
 {
     id:"common_delivery_robot",
 
@@ -168,7 +168,7 @@ const commonEvents = [
     ]
 
 },
-// 通用事件 ：奇怪的收音機
+// 通用事件3 ：奇怪的收音機
 {
     id:"common_radio",
 
@@ -255,7 +255,7 @@ const commonEvents = [
 
 },
 
-// 通用事件 ：拖行痕跡
+// 通用事件4 ：拖行痕跡
 {
     id:"common_drag_marks",
 
@@ -315,7 +315,7 @@ const commonEvents = [
 
 },
 
-// 通用事件 ：同行
+// 通用事件5 ：同行
 {
     id:"common_scavenger",
 
@@ -399,7 +399,7 @@ const commonEvents = [
 
 },
 
-// 通用事件:短暫休息
+// 通用事件6: 短暫休息
 {
     id:"common_break",
 

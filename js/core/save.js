@@ -213,7 +213,7 @@ function createSaveData() {
 
         saveVersion: 1,
 
-        gameVersion: "0.4.2",
+        gameVersion: "0.4.41",
 
         version: 1,
 
