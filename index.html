@@ -48,8 +48,8 @@
     id="save-manager-btn"
     class="info-icon-button"
     type="button"
-    aria-label="存檔管理"
-    title="存檔管理"
+    aria-label="開啟遊戲設定"
+    title="遊戲設定"
 >
     💾
 </button>
@@ -464,7 +464,7 @@
         <div class="info-modal-header">
 
             <h2>
-                Save Manager
+                遊戲設定
             </h2>
 
             <button
@@ -478,7 +478,64 @@
         </div>
 
         <div id="save-manager-content">
+	
+    <h3>
+        遊戲設定
+    </h3>
 
+    <div class="settings-group">
+
+    <label class="setting-item">
+
+        <input
+            id="setting-event-sound"
+            type="checkbox"
+        >
+
+        特殊事件提示音
+
+    </label>
+
+    <label class="setting-item">
+
+        <input
+            id="setting-event-title"
+            type="checkbox"
+        >
+
+        特殊事件分頁提醒
+
+    </label>
+
+    <label class="setting-item disabled">
+
+        <input
+            type="checkbox"
+            disabled
+        >
+
+        自動捲動探索紀錄（開發中）
+
+    </label>
+
+    <label class="setting-item disabled">
+
+        <input
+            type="checkbox"
+            disabled
+        >
+
+        科佩稱呼玩家名稱（開發中）
+
+    </label>
+
+</div>
+
+    <hr>
+
+    <h3>
+        存檔管理
+    </h3>
     <button
         id="export-save-btn"
         type="button"

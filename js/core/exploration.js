@@ -192,7 +192,7 @@ function startExploration() {
             player.remainingTime =
                 player.remainingTime - 1;
 
-            updateUI();
+            updateExplorationTimerUI();
 
             if (player.remainingTime <= 0) {
 

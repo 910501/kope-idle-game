@@ -97,15 +97,20 @@ function updateAreaUI() {
         player.remainingTime +
         " 秒";
 
-    if (areaImageElement) {
+    const currentImagePath =
+    areaImageElement.getAttribute(
+        "src"
+    );
 
-        areaImageElement.src =
-            currentArea.image;
+	if (
+    currentImagePath !==
+    currentArea.image
+) {
 
-        areaImageElement.alt =
-            currentArea.name;
+    areaImageElement.src =
+        currentArea.image;
 
-    }
+}
 
     if (explorationProgressElement) {
 
@@ -236,6 +241,89 @@ function updateExploreButtonUI() {
             "開始探索";
 
     }
+
+}
+
+function updateExplorationTimerUI() {
+
+    const countdownElement =
+        document.getElementById(
+            "countdown"
+        );
+
+    const progressElement =
+        document.getElementById(
+            "exploration-progress"
+        );
+
+    if (countdownElement) {
+
+        countdownElement.textContent =
+            "剩餘時間：" +
+            player.remainingTime +
+            " 秒";
+
+    }
+
+    if (!progressElement) {
+        return;
+    }
+
+    if (
+        !player.isExploring ||
+        player.exploringAreaId === null
+    ) {
+
+        progressElement.style.width =
+            "0%";
+
+        return;
+
+    }
+
+    const exploredArea =
+        areas.find(
+            function (area) {
+
+                return (
+                    area.id ===
+                    player.exploringAreaId
+                );
+
+            }
+        );
+
+    if (!exploredArea) {
+
+        progressElement.style.width =
+            "0%";
+
+        return;
+
+    }
+
+    const totalDuration =
+        exploredArea.duration;
+
+    const elapsedTime =
+        totalDuration -
+        player.remainingTime;
+
+    const percentage =
+        totalDuration > 0
+            ? elapsedTime /
+                totalDuration *
+                100
+            : 0;
+
+    progressElement.style.width =
+        Math.max(
+            0,
+            Math.min(
+                100,
+                percentage
+            )
+        ) + "%";
 
 }
 	// 更新地區選擇按鈕
@@ -424,8 +512,20 @@ function updateCharacterUI() {
         return;
     }
 
-    characterImageElement.src =
-        imagePath;
+    const currentPath =
+        characterImageElement.getAttribute(
+            "src"
+        );
+
+     // 只有狀態真的改變時才更換圖片。
+     // 否則 GIF 可能每次更新 UI 都重新載入，
+     // 導致動畫反覆從第一格開始。
+    if (currentPath !== imagePath) {
+
+        characterImageElement.src =
+            imagePath;
+
+    }
 
     characterImageElement.alt =
         "KO-PE：" +

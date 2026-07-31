@@ -843,3 +843,33 @@ body{
 .special-shop-actions button {
     min-width: 100px;
 }
+
+.settings-group{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+
+    margin-bottom:24px;
+
+}
+
+.setting-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    cursor:pointer;
+
+}
+
+.setting-item.disabled{
+
+    opacity:.5;
+
+}

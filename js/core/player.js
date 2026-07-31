@@ -35,12 +35,25 @@ specialPurchases: {
     remainingTime: 0,
 
     activeEvent: null,
+	
 
     characterState: "idle",
+	
+	logs: [
+    "歡迎來到 KO-PE Idle！"
+],
 
-    logs: [
-        "歡迎來到 KO-PE Idle！"
-    ]
+settings: {
+
+    eventSound: true,
+
+    eventTitleNotification: true,
+
+    autoScrollLog: true,
+
+    showPlayerName: true
+
+}
 
 };
 //========================

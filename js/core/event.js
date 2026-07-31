@@ -6,6 +6,14 @@ const DEFAULT_TITLE = "KO-PE Idle";
 
 function setEventTitle() {
 
+    if (
+        !player.settings.eventTitleNotification
+    ) {
+
+        return;
+
+    }
+
     document.title =
         "【！】KO-PE 正在等你";
 
@@ -19,7 +27,12 @@ function restoreTitle() {
 }
 
 function playEventSound() {
-
+if (
+    !player.settings.eventSound
+) {
+    return;
+}
+	
     try {
 
         const audioContext =

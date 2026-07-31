@@ -783,6 +783,74 @@ if (importSaveInput) {
 
 }
 //========================
+// 遊戲設定
+//========================
+
+const eventSoundCheckbox =
+    document.getElementById(
+        "setting-event-sound"
+    );
+
+const eventTitleCheckbox =
+    document.getElementById(
+        "setting-event-title"
+    );
+	
+if (
+    eventSoundCheckbox
+) {
+
+    eventSoundCheckbox.checked =
+        player.settings.eventSound;
+
+}
+
+if (
+    eventTitleCheckbox
+) {
+
+    eventTitleCheckbox.checked =
+        player.settings.eventTitleNotification;
+
+}
+
+if (
+    eventSoundCheckbox
+) {
+
+    eventSoundCheckbox.addEventListener(
+        "change",
+        function () {
+
+            player.settings.eventSound =
+                this.checked;
+
+            saveGame();
+
+        }
+    );
+
+}
+
+if (
+    eventTitleCheckbox
+) {
+
+    eventTitleCheckbox.addEventListener(
+        "change",
+        function () {
+
+            player.settings.eventTitleNotification =
+			this.checked;
+
+            saveGame();
+
+        }
+    );
+
+}
+
+//========================
 // Developer Events
 //========================
 if (debugSaveButton) {

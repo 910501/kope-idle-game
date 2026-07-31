@@ -8,7 +8,7 @@ const characterImages = {
         "images/kope/idle.png",
 
     exploring:
-        "images/kope/exploring.png",
+        "images/kope/exploring.webp",
 
     event:
         "images/kope/event.png",
