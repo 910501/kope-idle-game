@@ -3,24 +3,18 @@
 //========================
 
 function initializeSettings() {
+	if (playerNameInput) {
 
+    playerNameInput.value =
+        player.settings.playerName;
+
+}
 
     if (eventSoundCheckbox) {
 
         eventSoundCheckbox.checked =
             player.settings.eventSound;
 
-        eventSoundCheckbox.addEventListener(
-            "change",
-            function () {
-
-                player.settings.eventSound =
-                    this.checked;
-
-                saveGame();
-
-            }
-        );
 
     }
 
@@ -29,17 +23,7 @@ function initializeSettings() {
         eventTitleCheckbox.checked =
             player.settings.eventTitleNotification;
 
-        eventTitleCheckbox.addEventListener(
-            "change",
-            function () {
-
-                player.settings.eventTitleNotification =
-                    this.checked;
-
-                saveGame();
-
-            }
-        );
+       
 
     }
 

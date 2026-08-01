@@ -1,3 +1,4 @@
+let playerNameInput;
 let eventSoundCheckbox;
 let eventTitleCheckbox;
 
@@ -30,7 +31,11 @@ let blackMarketModal;
 
 
 function initializeDOM() {
-
+	playerNameInput =
+    document.getElementById(
+        "setting-player-name"
+    );
+	
    eventSoundCheckbox =
         document.getElementById(
             "setting-event-sound"

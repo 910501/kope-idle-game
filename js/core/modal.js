@@ -143,6 +143,17 @@ function closeInfoModal() {
     developerModal.hidden = false;
 
 }
+
+function closeDeveloperTools() {
+
+    if (!developerModal) {
+        return;
+    }
+
+    developerModal.hidden = true;
+
+}
+
 function openSaveManager() {
 
     if (!saveManagerModal) {
@@ -163,220 +174,5 @@ function closeSaveManager() {
 
 }
 
-if (blackMarketOpenButton) {
-
-    blackMarketOpenButton.addEventListener(
-        "click",
-        openBlackMarket
-    );
-
-}
-
-
-if (developerCloseButton) {
-
-    developerCloseButton.addEventListener(
-        "click",
-        closeDeveloperTools
-    );
-
-}
-
-if (blackMarketCloseButton) {
-
-    blackMarketCloseButton.addEventListener(
-        "click",
-        closeBlackMarket
-    );
-
-}
-if (blackMarketModal) {
-
-    blackMarketModal.addEventListener(
-        "click",
-        function (event) {
-
-            if (
-                event.target ===
-                blackMarketModal
-            ) {
-
-                closeBlackMarket();
-
-            }
-
-        }
-    );
-
-}
-
-//========================
-// Save Manager Events
-//========================
-function initializeModals() {
-//====================
-// Info Modal
-//====================
-    if (announcementButton) {
-
-    announcementButton.addEventListener(
-        "click",
-        function () {
-
-            openInfoModal(
-                "announcement"
-            );
-
-        }
-    );
-
-}
-if (creditsButton) {
-
-    creditsButton.addEventListener(
-        "click",
-        function () {
-
-            openInfoModal(
-                "credits"
-            );
-
-        }
-    );
-
-}
-if (infoModalCloseButton) {
-
-    infoModalCloseButton.addEventListener(
-        "click",
-        closeInfoModal
-    );
-
-}
-infoTabButtons.forEach(
-    function (button) {
-
-        button.addEventListener(
-            "click",
-            function () {
-
-                const pageId =
-                    button.dataset.infoPage;
-
-                openInfoModal(
-                    pageId
-                );
-
-            }
-        );
-
-    }
-);
-
-
-if (infoModal) {
-
-    infoModal.addEventListener(
-        "click",
-        function (event) {
-
-            if (
-                event.target ===
-                infoModal
-            ) {
-
-                closeInfoModal();
-
-            }
-
-        }
-    );
-
-}
-	//====================
-    // Save Manager
-    //====================
-
-	if (exportSaveButton) {
-
-    exportSaveButton.addEventListener(
-        "click",
-        exportSave
-    );
-
-}
-if (importSaveButton) {
-
-    importSaveButton.addEventListener(
-        "click",
-        function () {
-
-            importSaveInput.click();
-
-        }
-    );
-
-}
-if (importSaveInput) {
-
-    importSaveInput.addEventListener(
-        "change",
-        function () {
-
-            const file =
-                importSaveInput.files[0];
-
-            importSave(file);
-
-        }
-    );
-
-}
-
-
-
-    if (saveManagerButton) {
-
-        saveManagerButton.addEventListener(
-            "click",
-            openSaveManager
-        );
-
-    }
-
-    if (saveManagerCloseButton) {
-
-        saveManagerCloseButton.addEventListener(
-            "click",
-            closeSaveManager
-        );
-
-    }
-	}
-
-	
-//========================
-// Developer Events
-//========================
-
-
-function closeDeveloperTools() {
-
-    if (!developerModal) {
-        return;
-    }
-    developerModal.hidden = true;
-
-}
-if (DEBUG) {
-
-    developerButton.hidden = false;
-
-    developerButton.addEventListener(
-        "click",
-        openDeveloperTools
-    );
-
-}
 
 

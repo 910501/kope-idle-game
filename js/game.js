@@ -176,7 +176,7 @@ let nextExplorationDialogueCount =
 
 	// 探索台詞觸發時，使用地區專屬台詞的機率
 const SPECIAL_EXPLORATION_DIALOGUE_CHANCE =
-    0.3;
+    0.2;
 // 從指定台詞陣列隨機選出一句
 function getRandomDialogue(lines) {
 
@@ -245,7 +245,7 @@ function setCharacterLine(line) {
     }
 
     characterLineElement.textContent =
-        line;
+        formatDialogue(line);
 
 }
 // 從指定分類中抽取並顯示一句台詞

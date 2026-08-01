@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
 
 
     <main class="game-container">
@@ -463,24 +462,44 @@
 
         <div class="info-modal-header">
 
-            <h2>
-                遊戲設定
-            </h2>
+    <h2>
+        遊戲設定
+    </h2>
 
-            <button
-                id="save-manager-close-btn"
-                class="modal-close-button"
-                type="button"
-            >
-                ×
-            </button>
+    <button
+        id="save-manager-close-btn"
+        class="modal-close-button"
+        type="button"
+    >
+        ×
+    </button>
 
-        </div>
+</div>
 
+<div id="save-manager-content">
+
+    <div class="player-name-setting">
+
+        <label for="setting-player-name">
+            玩家名稱
+        </label>
+
+        <input
+            id="setting-player-name"
+            type="text"
+            maxlength="12"
+            placeholder="留空則使用「朋友」"
+        >
+
+        <small>
+            科佩偶爾會在對話中直接叫你的名字。
+        </small>
+
+    </div>
         <div id="save-manager-content">
 	
     <h3>
-        遊戲設定
+        個人設定
     </h3>
 
     <div class="settings-group">
@@ -518,16 +537,6 @@
 
     </label>
 
-    <label class="setting-item disabled">
-
-        <input
-            type="checkbox"
-            disabled
-        >
-
-        科佩稱呼玩家名稱（開發中）
-
-    </label>
 
 </div>
 
@@ -627,6 +636,7 @@
 <script src="js/core/dom.js"></script>
 <script src="js/core/player.js"></script>
 <script src="js/core/exploration.js"></script>
+<script src="js/core/input.js"></script>
 <script src="js/core/reward.js"></script>
 <script src="js/core/blackMarket.js"></script>
 <script src="js/core/event.js"></script>

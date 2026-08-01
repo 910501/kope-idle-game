@@ -381,7 +381,7 @@ body{
 }
 
 .info-modal {
-    width: min(600px, 100%);
+    width: min(700px, 100%);
     max-height: 80vh;
     overflow-y: auto;
 
@@ -871,5 +871,45 @@ body{
 .setting-item.disabled{
 
     opacity:.5;
+
+}
+
+.player-name-setting {
+
+    margin-bottom: 20px;
+
+}
+
+.player-name-setting label {
+
+    display: block;
+
+    font-weight: bold;
+
+    margin-bottom: 8px;
+
+}
+
+.player-name-setting input {
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 8px 10px;
+
+    font-size: 16px;
+
+}
+
+.player-name-setting small {
+
+    display: block;
+
+    margin-top: 6px;
+
+    opacity: .7;
+
+    font-size: 13px;
 
 }

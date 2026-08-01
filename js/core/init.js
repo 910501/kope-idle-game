@@ -10,7 +10,7 @@ function initializeGame() {
 
     initializeSettings();
 
-    initializeModals();
+    initializeInput();
 	
 	 if (exploreToggleButton) {
 

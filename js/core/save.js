@@ -170,6 +170,32 @@ if (
     player.discoveredAreas =
         savedData.discoveredAreas;
 }
+
+if (
+    savedData.settings &&
+    typeof savedData.settings === "object"
+) {
+
+    player.settings = {
+
+        ...player.settings,
+
+        eventSound: true,
+
+        eventTitleNotification: true,
+
+        ...savedData.settings
+
+    };
+
+    player.settings.playerName =
+        (
+            player.settings.playerName || ""
+        ).trim();
+
+}
+
+}
 // 舊存檔相容處理：
 // 已有地下設施秘鑰時，自動補上第五區發現紀錄
 const hasUndergroundKey =
@@ -190,33 +216,38 @@ if (
     player.discoveredAreas.push(5);
 
 }
-}
+
 function restoreGameState() {
         player.isExploring = false;
         player.remainingTime = 0;
         player.exploringAreaId = null;
         player.activeEvent = null;
 
-        player.logs = [
-            "存檔載入完成，歡迎回來！"
-        ];
+        player.logs.unshift(
+    "存檔載入完成，歡迎回來！"
+);
+
+player.logs =
+    player.logs.slice(0,100);
 }
 //========================
 // 建立存檔資料
 //========================
 
 function createSaveData() {
-
+    //====================
+    // Version
+    //====================
     return {
 
         game: "KO-PE Idle",
 
-        saveVersion: 1,
+        saveVersion: 2,
 
-        gameVersion: "0.4.41",
-
-        version: 1,
-
+        gameVersion: "0.5.0",
+    //====================
+    // Player
+    //====================
         level: player.level,
 
         exp: player.exp,
@@ -228,6 +259,9 @@ function createSaveData() {
 
         currentArea:
             player.currentArea,
+	//====================
+    // Inventory
+    //====================
 
         materials: {
             ...player.materials
@@ -240,14 +274,24 @@ function createSaveData() {
         specialPurchases: {
             ...player.specialPurchases
         },
-
+	//====================
+    // Progress
+    //====================
         discoveredAreas: [
             ...player.discoveredAreas
-        ]
+        ],
+	//====================
+    // Settings
+    //====================
+		settings: {
+    ...player.settings
+}
 
     };
 
 }
+
+
 //========================
 // 存檔系統
 //========================
@@ -315,7 +359,7 @@ if (
     savedData
 );
 restoreGameState();
-
+initializeSettings();
 
         
         console.log(
@@ -395,12 +439,18 @@ applyPlayerData(
 
 restoreGameState();
 
+initializeSettings();
+
 updateUI();
 
 saveGame();
 
 console.log(
     "KO-PE Idle 匯入成功。"
+);
+
+addLog(
+    "存檔匯入成功。"
 );
 
     } catch (error) {

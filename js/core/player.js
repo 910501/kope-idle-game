@@ -44,7 +44,8 @@ specialPurchases: {
 ],
 
 settings: {
-
+	playerName: "",
+	
     eventSound: true,
 
     eventTitleNotification: true,
@@ -191,4 +192,44 @@ function getPlayerEffects() {
 
     return effects;
 
+}
+
+//========================
+// 玩家名稱
+//========================
+
+function getPlayerName() {
+
+    if (
+        player.settings.playerName &&
+        player.settings.playerName.trim()
+    ) {
+
+        return player.settings.playerName.trim();
+
+    }
+
+    return "朋友";
+
+}
+
+//========================
+// 對話格式化
+//========================
+
+function formatDialogue(text) {
+
+    if (!text) {
+        return "";
+    }
+
+    return text
+        .replace(
+            /\{playerName\}/g,
+            getPlayerName()
+        )
+	.replace(
+            /\\n/g,
+            "\n"
+        );
 }
