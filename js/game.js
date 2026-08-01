@@ -1,6 +1,6 @@
 //==========================================
 // KO-PE Idle Demo
-// Version 0.4.41
+// Version 0.4.5
 //
 // 已完成：
 // ✔ 玩家系統
@@ -23,97 +23,6 @@
 // □ 事件鏈與主線故事
 // □ 音效、動畫與最終視覺優化
 // □ 待增加
-//========================
-// 開發模式
-//========================
-const DEBUG = false;
-// null = 使用正常機率
-const DEBUG_EVENT_CHANCE = null;
-
-//========================
-// 遊戲公告
-//========================
-
-const gameInfoData = {
-
-    announcement: {
-
-        title: "系統公告",
-
-        content: `
-            <h3>KO-PE Idle Demo</h3>
-
-            <p>
-                歡迎遊玩 KO-PE Idle！
-            </p>
-
-            <p>
-                目前版本仍在開發與測試階段，
-                部分功能與數值可能持續調整。<br>
-				回饋表單:https://reurl.cc/NOZoOn
-			<P>
-
-            <h3>目前版本</h3>
-
-            <p>
-                Version 0.4.41
-            </p>
-        `
-
-    },
-
-    credits: {
-
-        title: "製作名單",
-
-        content: `
-            <h3>遊戲製作</h3>
-
-            <p>
-                企劃、程式、UI介面：
-                sumime
-            </p>
-
-            <h3>原作</h3>
-			<p>卿卿我我 科佩
-			<p>
-            <p>
-                原作者：
-                路人A
-            </p>
-
-            <p>
-                本作已取得原作者授權製作。<br>
-				場景及部分物件使用ai生成。
-            </p>
-        `
-
-    },
-
-    thanks: {
-
-        title: "感謝名單",
-
-        content: `
-            <h3>特別感謝</h3>
-
-            <p>
-                原作者的授權與協助
-            </p>
-
-            <p>
-                參與測試與提供意見的朋友
-            </p>
-
-            <p>
-                所有遊玩 KO-PE Idle 的玩家
-            </p>
-        `
-
-    }
-
-};
-
 
 // 地區解鎖判定
 function isAreaUnlocked(area) {
@@ -254,79 +163,17 @@ function changeArea(areaId) {
 }
 
 
-//========================
-// 遊戲資訊彈窗
-//========================
 
-function openInfoModal(pageId) {
-
-    const modal =
-        document.getElementById(
-            "info-modal"
-        );
-
-    const modalTitle =
-        document.getElementById(
-            "info-modal-title"
-        );
-
-    const modalContent =
-        document.getElementById(
-            "info-modal-content"
-        );
-
-    const page =
-        gameInfoData[pageId];
-
-    if (
-        !modal ||
-        !modalTitle ||
-        !modalContent ||
-        !page
-    ) {
-
-        console.error(
-            "無法開啟遊戲資訊彈窗。"
-        );
-
-        return;
-
-    }
-
-    modalTitle.textContent =
-        page.title;
-
-    modalContent.innerHTML =
-        page.content;
-
-    modal.hidden = false;
-
-}
-// 關閉彈窗
-function closeInfoModal() {
-
-    const modal =
-        document.getElementById(
-            "info-modal"
-        );
-
-    if (!modal) {
-        return;
-    }
-
-    modal.hidden = true;
-
-}
 //========================
 // KO-PE 台詞系統
 //========================
-
 let lastCharacterLine = "";
 
 let explorationDialogueCounter = 0;
 
 let nextExplorationDialogueCount =
     randomInteger(3, 10);
+
 	// 探索台詞觸發時，使用地區專屬台詞的機率
 const SPECIAL_EXPLORATION_DIALOGUE_CHANCE =
     0.3;
@@ -377,10 +224,6 @@ function getRandomDialogue(lines) {
 // 將指定文字顯示到角色台詞區
 function setCharacterLine(line) {
 
-    const characterLineElement =
-        document.getElementById(
-            "character-line"
-        );
 
     if (!characterLineElement) {
 
@@ -506,104 +349,8 @@ function addLog(message) {
 }
 
 
-const announcementButton =
-    document.getElementById(
-        "announcement-btn"
-    );
 
-const creditsButton =
-    document.getElementById(
-        "credits-btn"
-    );
 
-const infoModal =
-    document.getElementById(
-        "info-modal"
-    );
-
-const infoModalCloseButton =
-    document.getElementById(
-        "info-modal-close"
-    );
-
-const infoTabButtons =
-    document.querySelectorAll(
-        "[data-info-page]"
-    );
-	if (announcementButton) {
-
-    announcementButton.addEventListener(
-        "click",
-        function () {
-
-            openInfoModal(
-                "announcement"
-            );
-
-        }
-    );
-
-}
-if (creditsButton) {
-
-    creditsButton.addEventListener(
-        "click",
-        function () {
-
-            openInfoModal(
-                "credits"
-            );
-
-        }
-    );
-
-}
-if (infoModalCloseButton) {
-
-    infoModalCloseButton.addEventListener(
-        "click",
-        closeInfoModal
-    );
-
-}
-infoTabButtons.forEach(
-    function (button) {
-
-        button.addEventListener(
-            "click",
-            function () {
-
-                const pageId =
-                    button.dataset.infoPage;
-
-                openInfoModal(
-                    pageId
-                );
-
-            }
-        );
-
-    }
-);
-if (infoModal) {
-
-    infoModal.addEventListener(
-        "click",
-        function (event) {
-
-            if (
-                event.target ===
-                infoModal
-            ) {
-
-                closeInfoModal();
-
-            }
-
-        }
-    );
-
-}
 document.addEventListener(
     "keydown",
     function (event) {
@@ -619,319 +366,8 @@ document.addEventListener(
     }
 );
 
-//========================
-// 遊戲開始
-//========================
 
-const exploreToggleButton =
-    document.getElementById(
-        "explore-toggle-btn"
-    );
-
-const blackMarketOpenButton =
-    document.getElementById(
-        "black-market-open-btn"
-    );
-
-const blackMarketCloseButton =
-    document.getElementById(
-        "black-market-close-btn"
-    );
-
-const blackMarketModal =
-    document.getElementById(
-        "black-market-modal"
-    );
-	if (blackMarketOpenButton) {
-
-    blackMarketOpenButton.addEventListener(
-        "click",
-        openBlackMarket
-    );
-
-}
-//========================
-// Save Manager
-//========================
-const saveManagerButton =
-    document.getElementById(
-        "save-manager-btn"
-    );
-
-const saveManagerModal =
-    document.getElementById(
-        "save-manager-modal"
-    );
-
-const saveManagerCloseButton =
-    document.getElementById(
-        "save-manager-close-btn"
-    );
-//========================
-// Developer Tools
-//========================
-const developerButton =
-    document.getElementById(
-        "developer-btn"
-    );
-
-const developerModal =
-    document.getElementById(
-        "developer-modal"
-    );
-
-const developerCloseButton =
-    document.getElementById(
-        "developer-close-btn"
-    );
-	function openDeveloperTools() {
-	if (!developerModal) {
-        return;
-    }
-    developerModal.hidden = false;
-
-}
-function openSaveManager() {
-
-    if (!saveManagerModal) {
-        return;
-    }
-
-    saveManagerModal.hidden = false;
-
-}
-
-function closeSaveManager() {
-
-    if (!saveManagerModal) {
-        return;
-    }
-
-    saveManagerModal.hidden = true;
-
-}
-//========================
-// Save Manager Events
-//========================
-if (saveManagerButton) {
-
-    saveManagerButton.addEventListener(
-        "click",
-        openSaveManager
-    );
-
-}
-if (saveManagerCloseButton) {
-
-    saveManagerCloseButton.addEventListener(
-        "click",
-        closeSaveManager
-    );
-
-}
-const debugSaveButton =
-    document.getElementById(
-        "debug-save-btn"
-    );
-const exportSaveButton =
-    document.getElementById(
-        "export-save-btn"
-    );
-
-const importSaveButton =
-    document.getElementById(
-        "import-save-btn"
-    );
-
-const importSaveInput =
-    document.getElementById(
-        "import-save-input"
-    );
-if (exportSaveButton) {
-
-    exportSaveButton.addEventListener(
-        "click",
-        exportSave
-    );
-
-}
-if (importSaveButton) {
-
-    importSaveButton.addEventListener(
-        "click",
-        function () {
-
-            importSaveInput.click();
-
-        }
-    );
-
-}
-if (importSaveInput) {
-
-    importSaveInput.addEventListener(
-        "change",
-        function () {
-
-            const file =
-                importSaveInput.files[0];
-
-            importSave(file);
-
-        }
-    );
-
-}
-//========================
-// 遊戲設定
-//========================
-
-const eventSoundCheckbox =
-    document.getElementById(
-        "setting-event-sound"
-    );
-
-const eventTitleCheckbox =
-    document.getElementById(
-        "setting-event-title"
-    );
 	
-if (
-    eventSoundCheckbox
-) {
-
-    eventSoundCheckbox.checked =
-        player.settings.eventSound;
-
-}
-
-if (
-    eventTitleCheckbox
-) {
-
-    eventTitleCheckbox.checked =
-        player.settings.eventTitleNotification;
-
-}
-
-if (
-    eventSoundCheckbox
-) {
-
-    eventSoundCheckbox.addEventListener(
-        "change",
-        function () {
-
-            player.settings.eventSound =
-                this.checked;
-
-            saveGame();
-
-        }
-    );
-
-}
-
-if (
-    eventTitleCheckbox
-) {
-
-    eventTitleCheckbox.addEventListener(
-        "change",
-        function () {
-
-            player.settings.eventTitleNotification =
-			this.checked;
-
-            saveGame();
-
-        }
-    );
-
-}
-
-//========================
-// Developer Events
-//========================
-if (debugSaveButton) {
-
-    debugSaveButton.addEventListener(
-        "click",
-        function () {
-
-            debug.loadDebugSave();
-
-            closeDeveloperTools();
-
-        }
-    );
-
-}
-
-function closeDeveloperTools() {
-
-    if (!developerModal) {
-        return;
-    }
-    developerModal.hidden = true;
-
-}
-if (DEBUG) {
-
-    developerButton.hidden = false;
-
-    developerButton.addEventListener(
-        "click",
-        openDeveloperTools
-    );
-
-}
-
-if (developerCloseButton) {
-
-    developerCloseButton.addEventListener(
-        "click",
-        closeDeveloperTools
-    );
-
-}
-
-if (blackMarketCloseButton) {
-
-    blackMarketCloseButton.addEventListener(
-        "click",
-        closeBlackMarket
-    );
-
-}
-if (blackMarketModal) {
-
-    blackMarketModal.addEventListener(
-        "click",
-        function (event) {
-
-            if (
-                event.target ===
-                blackMarketModal
-            ) {
-
-                closeBlackMarket();
-
-            }
-
-        }
-    );
-
-}
-if (exploreToggleButton) {
-
-    exploreToggleButton.addEventListener(
-        "click",
-        toggleExploration
-    );
-
-}
-
 window.addEventListener(
     "beforeunload",
     function () {
@@ -940,19 +376,12 @@ window.addEventListener(
 
     }
 );
-initializePlayerMaterials();
-rebuildAllEvents();
-loadGame();
 
-// 為舊存檔補上新增素材
-initializePlayerMaterials();
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
-setCharacterState(
-    "idle"
-);
+        initializeGame();
 
-updateUI();
-
-showRandomCharacterLine(
-    characterDialogue.greeting
+    }
 );
