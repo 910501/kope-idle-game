@@ -87,10 +87,10 @@ function sellMaterial(
     if (ownedAmount < amount) {
 
         addLog(
-            "持有的「" +
-            material.name +
-            "」數量不足。"
-        );
+    "沒有可出售的「" +
+    material.name +
+    "」。"
+	);
 
         showRandomCharacterLine(
             characterDialogue
@@ -344,6 +344,29 @@ function upgradeEquipment(
     ] =
         nextLevelData.level;
 
+    const dialogue =
+    equipmentDialogue[
+        equipment.id
+    ]?.[
+        nextLevelData.level
+    ];
+
+if (dialogue) {
+
+    addLog(
+        dialogue.log
+    );
+
+    setCharacterState(
+        "success"
+    );
+
+    setCharacterLine(
+        dialogue.kope
+    );
+
+} else {
+
     addLog(
         "裝備改造完成：「" +
         nextLevelData.name +
@@ -355,6 +378,8 @@ function upgradeEquipment(
             .blackMarket
             .upgradeSuccess
     );
+
+}
 
     saveGame();
     updateUI();
@@ -814,8 +839,13 @@ function openBlackMarket() {
             sellOneButton.textContent =
                 "出售 1 個";
 
-            sellOneButton.disabled =
-                ownedAmount <= 0;
+            if (ownedAmount <= 0) {
+
+		sellOneButton.classList.add(
+			"insufficient"
+		);
+
+	}
 
             sellOneButton.addEventListener(
                 "click",
@@ -837,8 +867,13 @@ function openBlackMarket() {
             sellAllButton.textContent =
                 "全部出售";
 
-            sellAllButton.disabled =
-                ownedAmount <= 0;
+            if (ownedAmount <= 0) {
+
+    sellAllButton.classList.add(
+        "insufficient"
+    );
+
+}
 
             sellAllButton.addEventListener(
                 "click",
@@ -990,8 +1025,7 @@ function openBlackMarket() {
                     " 黑金晶片";
 
                 upgradeButton.disabled =
-                    player.money <
-                    nextLevelData.price;
+                    false;
 
                 upgradeButton.addEventListener(
                     "click",
@@ -1017,3 +1051,4 @@ function openBlackMarket() {
         }
     );
 }
+

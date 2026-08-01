@@ -119,11 +119,31 @@ const isCommonMaterial =
     material.category ===
         "common";
 
+const isRareMaterial =
+    material &&
+    material.category ===
+        "rare";
+
+// 一般素材額外掉落
 if (
     isCommonMaterial &&
     Math.random() <
         playerEffects
             .commonMaterialBonusChance
+) {
+
+    obtainedMaterials[
+        drop.material
+    ] += 1;
+
+}
+
+// 稀有素材額外掉落
+if (
+    isRareMaterial &&
+    Math.random() <
+        playerEffects
+            .rareMaterialBonusChance
 ) {
 
     obtainedMaterials[
@@ -181,8 +201,17 @@ function startExploration() {
     player.exploringAreaId =
         currentArea.id;
 
-    player.remainingTime =
-        currentArea.duration;
+    const playerEffects =
+    getPlayerEffects();
+
+	player.remainingTime =
+		Math.max(
+			1,
+			Math.ceil(
+				currentArea.duration *
+				(1 - playerEffects.explorationSpeed)
+			)
+		);
 
     updateUI();
 

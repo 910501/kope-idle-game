@@ -40,12 +40,16 @@ const debug = {
         equipmentData.forEach(
 
             function (equipment) {
+			const DEBUG_EQUIPMENT_LEVEL = 1;
+// 改成 5 就全部滿級
+			equipmentData.forEach(function (equipment) {
 
-                debugSave.equipmentLevels[
-                    equipment.id
-                ] =
-                equipment.levels.length;
+		debugSave.equipmentLevels[
+			equipment.id
+		] = DEBUG_EQUIPMENT_LEVEL;
 
+	});
+                
             }
 
         );

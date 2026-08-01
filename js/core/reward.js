@@ -114,9 +114,12 @@ return;
         ) {
             return;
         }
-
+		const playerEffects =
+    getPlayerEffects();
+	
         let amount = 1;
-
+		let reducedBy = 0;
+		
         // 固定數量
         if (
             typeof reward.amount === "number"
@@ -176,6 +179,27 @@ if (
     ] = 0;
 
 }
+//========================
+// 外骨骼：降低事件損失
+//========================
+
+if (amount < 0) {
+
+    const originalAmount = amount;
+
+    amount = Math.ceil(
+        amount *
+        (
+            1 -
+            playerEffects.lossReduction
+        )
+    );
+
+    reducedBy =
+        Math.abs(originalAmount) -
+        Math.abs(amount);
+
+}
 
 // 增減素材
 player.materials[
@@ -214,6 +238,5 @@ player.materials[
     });
 
     return obtainedRewards;
-
 }
 

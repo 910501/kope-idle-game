@@ -913,3 +913,9 @@ body{
     font-size: 13px;
 
 }
+
+button.insufficient {
+
+    opacity: 0.5;
+
+}

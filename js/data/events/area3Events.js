@@ -439,26 +439,32 @@ const area3Events = [
             },
 
             failure: {
-                log:
-                    "其中一台智械掃描到你的背包，震盪彈擦過牆面。" +
-                    "逃跑途中掉落了部分回收物資。",
 
-                rewards: [
+    log:
+        "其中一台智械掃描到你的背包，震盪彈擦過牆面。" +
+        "逃跑途中掉落了部分回收物資。",
+equipmentLog: {
 
-                    {
-                        material: "wire",
-                        min: -5,
-						max: -2
-                    },
+        exoskeleton:
+        "液壓骨架替你穩住了身形，你成功保住了部分物資。",
+},
+    rewards: [
 
-                    {
-                        material: "scrap",
-                        min: -3,
-						max: -1
-                    }
+        {
+            material: "wire",
+            min: -5,
+            max: -2
+        },
 
-                ]
-            }
+        {
+            material: "scrap",
+            min: -3,
+            max: -1
+        }
+
+    ]
+
+}
 
         },
 
@@ -618,9 +624,12 @@ const area3Events = [
             failure: {
 
                 log:
-                    "幾台機器人撞上背包，把裡面的材料掃得到處都是。" +
-                    "等你回頭時，只剩它們滿意離去的背影。",
+        "幾台機器人撞上背包，把裡面的材料掃得到處都是。",
+equipmentLog: {
 
+        exoskeleton:
+        "外骨骼穩住了背包固定架，沒有讓所有材料都散落出去。",
+},
                 rewards: [
 
                     {
@@ -882,7 +891,11 @@ const area3Events = [
                 log:
                     "安全機制瞬間啟動，工具箱在你面前炸成碎片。" +
                     "爆炸損毀了你回收的部分物資。",
+			equipmentLog: {
 
+        exoskeleton:
+        "外骨骼擋下了飛散的金屬碎片，你只損失了一部分回收品。",
+			},
                 rewards: [
 
                     {
@@ -1015,7 +1028,11 @@ const area3Events = [
                 log:
                     "厚重的防爆門提前落下。" +
                     "脫困過程損壞了部分裝備。",
+				equipmentLog: {
 
+        exoskeleton:
+			"機械骨架替你撐住了沉重的防爆門，減少了裝備損壞。",
+			 },
                 rewards:[
 
                     {

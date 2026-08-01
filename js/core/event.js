@@ -305,6 +305,23 @@ if (obtainedRewards.length > 0) {
 
         }
     );
+//========================
+// 裝備專屬事件描述
+//========================
+if (
+
+    getPlayerEffects()
+        .lossReduction > 0 &&
+
+    result.equipmentLog?.exoskeleton
+
+) {
+
+    addLog(
+        result.equipmentLog.exoskeleton
+    );
+
+}
 
 } else {
 
